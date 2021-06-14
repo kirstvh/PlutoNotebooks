@@ -657,8 +657,8 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
 # ╟─ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
 # ╟─0e39a993-bb2f-4897-bfe2-5128ec62bef9
-# ╠═6acb0a97-6469-499f-a5cf-6335d6aa909a
-# ╠═595423df-728b-43b1-ade4-176785c54be3
+# ╟─6acb0a97-6469-499f-a5cf-6335d6aa909a
+# ╟─595423df-728b-43b1-ade4-176785c54be3
 # ╟─fbffaab6-3154-49df-a226-d5810d0b7c38
 # ╟─1f48143a-2152-4bb9-a765-a25e70c281a3
 # ╠═0b0bac95-df5a-48ac-a7c0-45a9f76e687b
