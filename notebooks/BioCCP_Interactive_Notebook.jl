@@ -96,7 +96,7 @@ end
 # ╔═╡ 4d246460-af05-11eb-382b-590e60ba61f5
 md"## The Coupon Collector's Problem in Combinatorial Biotechnology
 
-This notebook provides functions and visualizations to determine minimum sample sizes for biotechnological experiments based on the mathematical framework of the Coupon Collector's Problem (implemented formulas based on [^1], [^2]).
+This notebook provides functions and visualizations to determine minimum sample sizes for biotechnological experiments, based on the mathematical framework of the Coupon Collector's Problem (implemented formulas based on [^1], [^2]).
 
 "
 
@@ -155,6 +155,9 @@ end
 
 # ╔═╡ 44d4dfee-3073-49aa-867c-3abea10e6e37
 begin
+	# To load your custom probability vector from an excell sheet,
+	# see for example XLSX package
+	# Below, an example of a custom abundance vector is defined using rand
 	if distribution == "Custom vector"
 		abundances = rand(200:1:400, n)
 	end
@@ -217,13 +220,27 @@ end
 
 # ╔═╡ 87c3f5cd-79bf-4ad8-b7f8-3e98ec548a9f
 begin
-	if show_modprobs == "🔻 SHOW "  && distribution == "Normally distributed"
+	if show_modprobs == "🔻 SHOW "  && distribution == "Bell curve"
 		histogram(p_vec_unnorm, normalize=:probability,  bar_edges=true,  size = (650, 300), orientation=:v, bar_position=:stack)
 		# if distribution == "Normally distributed"
 		# 	plot!(x->pdf(Normal(μ, σ), x), xlim=xlims())
 		# 	xlabel!("Abundance"); ylabel!("probability"); title!("Distribution of module abundances")
 		# end
 		xlabel!("Abundance"); ylabel!("Relative frequency"); title!("Distribution of module abundances")
+	end	
+end
+
+# ╔═╡ 2313198e-3ac9-407b-b0d6-b79e02cefe35
+begin
+	if show_modprobs == "🔻 SHOW "  && distribution == "Bell curve"
+md"""To generate module probabilities that form a bell curve around the module probability $(µ/sum(p_vec_unnorm)), we follow the percentiles of normal distribution, which states, that for a normal distribution, 68% of the values lies in the interval [μ - σ, μ + σ], 13.5% of the values falls into the range [μ + σ, μ + 2σ], 13.5% of the values lies in [μ - 2σ, μ - σ] , ... with as a result:
+-  $(n_perc_1+n_perc_rest) probabilities of $(µ/sum(p_vec_unnorm))
+-  $(n_perc_2) probabilities of $((μ+1.5*σ)/sum(p_vec_unnorm))
+-  $(n_perc_2) probabilities of $((μ-1.5*σ)/sum(p_vec_unnorm))
+-  $(n_perc_3) probabilities of $((μ+2.5*σ)/sum(p_vec_unnorm))
+-  $(n_perc_3) probabilities of $((μ-2.5*σ)/sum(p_vec_unnorm))
+-  $(n_perc_4) probabilities of $((μ+3.5*σ)/sum(p_vec_unnorm))
+-  $(n_perc_4) probabilities of $((μ-3.5*σ)/sum(p_vec_unnorm)) """
 	end	
 end
 
@@ -317,7 +334,7 @@ end
 # ╔═╡ 22fe8006-0e81-4e0a-a460-28610a55cd97
 md""" **💻 Success probability**               $(@bind show_success Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE ") )\
 
- + *The chance that all modules are observed for a given sample size.* """
+ + *The probability that all modules are observed for a given sample size.* """
 
 # ╔═╡ db4371e4-7f86-4db3-b076-12f6cd220b89
 begin
@@ -537,99 +554,9 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 """
 
 
-# ╔═╡ 0b0bac95-df5a-48ac-a7c0-45a9f76e687b
-
-
-# ╔═╡ 465faeb9-2ec1-4f20-89e6-1467dc9fbab9
-
-
-# ╔═╡ 66403a85-f6fe-4c5e-ba50-350c23c11684
-
-
-# ╔═╡ 11339fba-d138-489c-9a03-bc1a5404627b
-
-
-# ╔═╡ 32371c0a-de7c-4e70-92f2-2a0b10352488
-
-
-# ╔═╡ 0df6d7ed-9c72-479a-b94e-3643b81e97db
-
-
-# ╔═╡ 65824c87-8143-4b8a-9aa8-2c039dcaff6c
-
-
-# ╔═╡ 4aa75513-ced4-46c1-987a-2342448cde15
-
-
-# ╔═╡ f49e5c53-1ef1-48bd-b176-94bfa6f7b988
-
-
-# ╔═╡ 6522715b-2611-487a-9d88-a11885dfcad9
-
-
-# ╔═╡ a73a34ee-e144-4f38-9c84-7215aa8cc490
-
-
-# ╔═╡ 45bcc917-98f6-4284-b7c3-2e025704f09b
-
-
-# ╔═╡ df785da6-5260-4e54-85f7-bfc83e353284
-
-
-# ╔═╡ 41b889ab-467b-44df-bd79-433abf578817
-
-
-# ╔═╡ 273f1522-7c36-4c60-83ea-cf96a8bccb1e
-
-
-# ╔═╡ f7851649-33df-40ea-8cf9-fd804690a573
-
-
-# ╔═╡ b0808649-560f-42c2-afed-5a5feb4c2a98
-
-
-# ╔═╡ 13e49fe9-a829-4610-8c53-c75c7ee4bc2d
-
-
-# ╔═╡ eb490a65-bd8d-4f04-ae50-9f22f32fd32a
-
-
-# ╔═╡ 1c797de7-6f1b-4591-849e-d5d2172f5855
-
-
-# ╔═╡ fa89c00f-b78d-4d70-8d08-89fa8ac0368a
-
-
-# ╔═╡ 0e0c4869-cf23-4951-bd85-8623607e07fd
-
-
-# ╔═╡ 2be4b647-2a50-4e89-a7d9-862387a5116a
-
-
-# ╔═╡ 19f28a2e-ab20-4b0e-a297-eb6b03a2a009
-
-
-# ╔═╡ bb55cd25-2789-44d1-8ab4-ee193b2772c5
-
-
-# ╔═╡ 73c1bc9b-b05d-4e2a-9242-4dd9a4150146
-
-
-# ╔═╡ 0fe62746-eac4-4d66-855b-0c8fc72bae44
-
-
-# ╔═╡ dbba2022-8cee-4cbe-b897-99f7ee195d10
-
-
-# ╔═╡ bec6471b-b4a3-431c-b3b2-16432652dc7f
-
-
-# ╔═╡ e76a0226-baa4-4fe6-9091-04ac0f0f6768
-
-
 # ╔═╡ Cell order:
 # ╟─4d246460-af05-11eb-382b-590e60ba61f5
-# ╠═dc734eab-c244-4337-a0f3-469d77045eec
+# ╟─dc734eab-c244-4337-a0f3-469d77045eec
 # ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
 # ╟─45507d48-d75d-41c9-a018-299e209f900e
@@ -639,6 +566,7 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─44d4dfee-3073-49aa-867c-3abea10e6e37
 # ╟─f6ebf9fb-0a29-4cb4-a544-6c6e32bedcc4
 # ╟─87c3f5cd-79bf-4ad8-b7f8-3e98ec548a9f
+# ╟─2313198e-3ac9-407b-b0d6-b79e02cefe35
 # ╟─d4a9da7a-f455-426b-aecd-227c25e1d4e8
 # ╟─f098570d-799b-47e2-b692-476a4d95825b
 # ╟─caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
@@ -661,33 +589,3 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─595423df-728b-43b1-ade4-176785c54be3
 # ╟─fbffaab6-3154-49df-a226-d5810d0b7c38
 # ╟─1f48143a-2152-4bb9-a765-a25e70c281a3
-# ╠═0b0bac95-df5a-48ac-a7c0-45a9f76e687b
-# ╠═465faeb9-2ec1-4f20-89e6-1467dc9fbab9
-# ╠═66403a85-f6fe-4c5e-ba50-350c23c11684
-# ╠═11339fba-d138-489c-9a03-bc1a5404627b
-# ╠═32371c0a-de7c-4e70-92f2-2a0b10352488
-# ╠═0df6d7ed-9c72-479a-b94e-3643b81e97db
-# ╠═65824c87-8143-4b8a-9aa8-2c039dcaff6c
-# ╠═4aa75513-ced4-46c1-987a-2342448cde15
-# ╠═f49e5c53-1ef1-48bd-b176-94bfa6f7b988
-# ╠═6522715b-2611-487a-9d88-a11885dfcad9
-# ╠═a73a34ee-e144-4f38-9c84-7215aa8cc490
-# ╠═45bcc917-98f6-4284-b7c3-2e025704f09b
-# ╠═df785da6-5260-4e54-85f7-bfc83e353284
-# ╠═41b889ab-467b-44df-bd79-433abf578817
-# ╠═273f1522-7c36-4c60-83ea-cf96a8bccb1e
-# ╠═f7851649-33df-40ea-8cf9-fd804690a573
-# ╠═b0808649-560f-42c2-afed-5a5feb4c2a98
-# ╠═13e49fe9-a829-4610-8c53-c75c7ee4bc2d
-# ╠═eb490a65-bd8d-4f04-ae50-9f22f32fd32a
-# ╠═1c797de7-6f1b-4591-849e-d5d2172f5855
-# ╠═fa89c00f-b78d-4d70-8d08-89fa8ac0368a
-# ╠═0e0c4869-cf23-4951-bd85-8623607e07fd
-# ╠═2be4b647-2a50-4e89-a7d9-862387a5116a
-# ╠═19f28a2e-ab20-4b0e-a297-eb6b03a2a009
-# ╠═bb55cd25-2789-44d1-8ab4-ee193b2772c5
-# ╠═73c1bc9b-b05d-4e2a-9242-4dd9a4150146
-# ╠═0fe62746-eac4-4d66-855b-0c8fc72bae44
-# ╠═dbba2022-8cee-4cbe-b897-99f7ee195d10
-# ╠═bec6471b-b4a3-431c-b3b2-16432652dc7f
-# ╠═e76a0226-baa4-4fe6-9091-04ac0f0f6768
