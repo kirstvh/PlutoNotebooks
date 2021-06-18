@@ -168,7 +168,7 @@ md"""
  
 🎯 **REPORT**  🎯
 
-**💻 Module probabilities**                                                     $(@bind show_modprobs Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE ") )  \
+**💻 Module probabilities**                                                                                                                       $(@bind show_modprobs Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE ") )  \
 *How the abundances of the modules are distributed during combinatorial library generation.*
 """
 
@@ -261,9 +261,9 @@ md"Each biological design in the design space is built by choosing $r module(s) 
 end
 
 # ╔═╡ caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
-md""" **💻 Minimum sample size required**                                            $(@bind show_E Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 SHOW ")) 
+md""" **💻 Expected minimum sample size**                                                                                                             $(@bind show_E Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 SHOW ")) 
 \
-*The number of designs required to observe each module at least $m times in the sampled set of designs.* """  
+*The number of designs required to observe each module at least $m times in the sampled set of designs.* """   
 
 # ╔═╡ 6f14a72c-51d3-4759-bb8b-10db1dc260f0
 begin
@@ -343,7 +343,7 @@ begin
 end
 
 # ╔═╡ 22fe8006-0e81-4e0a-a460-28610a55cd97
-md""" **💻 Success probability**                                                $(@bind show_success Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE ") )\
+md""" **💻 Success probability**                                                                                                                  $(@bind show_success Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE ") )\
 
  + *The probability that the minimum number of designs T is smaller than or equal to a given sample size t.* """
 
@@ -441,7 +441,7 @@ end
 end
 
 # ╔═╡ dc696281-7a5b-4568-a4c2-8dde90af43f0
-md""" **💻 Expected fraction of total number of modules observed**     $(@bind show_satur Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE "))\
+md""" **💻 Expected observed fraction of the total number of modules**                $(@bind show_satur Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE "))\
 *The expected fraction of the total number of available modules observed after collecting a given number of designs.*"""
 
 # ╔═╡ eb92ff7c-0140-468c-8b32-f15d1cf15913
@@ -485,7 +485,7 @@ end
 end
 
 # ╔═╡ f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
-md""" **💻 Occurence of a specific module**                                      $(@bind show_occ Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE "))\
+md""" **💻 Occurrence of a specific module**                                                                                                       $(@bind show_occ Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE "))\
 *How many times one can expect to have collected a specific module in a sample of a given size.*"""
 
 # ╔═╡ ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
@@ -523,7 +523,7 @@ if show_occ == "🔻 SHOW "
 	j = 0:1:minimum([20, 2*ed])
 			
 	x  = prob_occurence_module.(p, sample_size_3, j)
-	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurences in sample", ylabel="probability p", title="Chance on № of occurences for specific module")
+	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample", ylabel="probability p", title="Chance on № of occurrences for specific module")
 	
 		else
 		rank = parse(Int64, rank_string)
@@ -536,7 +536,7 @@ if show_occ == "🔻 SHOW "
 	j = 0:1:minimum([20, 2*ed])
 			
 	x  = prob_occurence_module.(p, sample_size_4, j)
-	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurences in sample", ylabel="probability p", title="Chance on № of occurences for specific module", size=((550,300)))	
+	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample", ylabel="probability p", title="Chance on № of occurrences for specific module", size=((550,300)))	
 			
 		end
 	end
@@ -566,23 +566,23 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 
 
 # ╔═╡ Cell order:
-# ╠═4d246460-af05-11eb-382b-590e60ba61f5
+# ╟─4d246460-af05-11eb-382b-590e60ba61f5
 # ╟─dc734eab-c244-4337-a0f3-469d77045eec
 # ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
-# ╠═a8c81622-194a-443a-891b-bfbabffccff1
+# ╟─a8c81622-194a-443a-891b-bfbabffccff1
 # ╟─45507d48-d75d-41c9-a018-299e209f900e
 # ╟─b17f3b8a-61ee-4563-97cd-19ff049a8e1e
 # ╟─e3b4c2d8-b78c-467e-a863-5eecb8ec58dc
 # ╟─2639e3fb-ccbb-44de-bd15-1c5dbf6c1539
 # ╟─44d4dfee-3073-49aa-867c-3abea10e6e37
-# ╟─f6ebf9fb-0a29-4cb4-a544-6c6e32bedcc4
+# ╠═f6ebf9fb-0a29-4cb4-a544-6c6e32bedcc4
 # ╟─87c3f5cd-79bf-4ad8-b7f8-3e98ec548a9f
 # ╟─2313198e-3ac9-407b-b0d6-b79e02cefe35
 # ╟─b0291e05-776e-49ce-919f-4ad7de4070af
 # ╟─f098570d-799b-47e2-b692-476a4d95825b
-# ╟─caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
+# ╠═caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
 # ╟─6f14a72c-51d3-4759-bb8b-10db1dc260f0
-# ╟─22fe8006-0e81-4e0a-a460-28610a55cd97
+# ╠═22fe8006-0e81-4e0a-a460-28610a55cd97
 # ╟─db4371e4-7f86-4db3-b076-12f6cd220b89
 # ╟─317995ed-bdf4-4f78-bd66-a39ffd1dc452
 # ╟─ca5a4cef-df67-4a5e-8a86-75a9fe8c6f37
@@ -593,10 +593,10 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─f0eaf96b-0bc0-4194-9a36-886cb1d66e00
 # ╟─0099145a-5460-4549-9513-054bc1b04eea
 # ╟─7968de5e-5ae8-4ab4-b089-c3d33475af2f
-# ╟─f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
+# ╠═f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
 # ╟─ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
 # ╟─0e39a993-bb2f-4897-bfe2-5128ec62bef9
-# ╟─6acb0a97-6469-499f-a5cf-6335d6aa909a
+# ╠═6acb0a97-6469-499f-a5cf-6335d6aa909a
 # ╟─595423df-728b-43b1-ade4-176785c54be3
 # ╟─fbffaab6-3154-49df-a226-d5810d0b7c38
 # ╟─1f48143a-2152-4bb9-a765-a25e70c281a3
