@@ -488,8 +488,8 @@ md""" **💻 Occurence of a specific module**        $(@bind show_
 
 # ╔═╡ ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
 if show_occ == "🔻 SHOW " && distribution != "Zipf law"
-	md"""    👉 Enter the probability of the module of interest: $(@bind p_string TextField(default="0.005"))\
-	    👉 Enter the sample size of interest:                $(@bind sample_size_3_string TextField(default="500"))
+	md"""    👉 Enter the probability of the module of interest: $(@bind p_string TextField(default="0.01"))\
+	    👉 Enter the sample size of interest:                $(@bind sample_size_3_string TextField(default="300"))
 	""" 	
 	
 end
@@ -518,7 +518,7 @@ if show_occ == "🔻 SHOW "
 # 	p = p_vec[module_]
 # 	p = maximum(p_vec) 
 	ed = Int(floor(sample_size_3*p))
-	j = 0:1:8
+	j = 0:1:minimum([20, 2*ed])
 			
 	x  = prob_occurence_module.(p, sample_size_3, j)
 	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurences in sample", ylabel="probability p", title="Chance on № of occurences for specific module")
@@ -531,7 +531,7 @@ if show_occ == "🔻 SHOW "
 # 	p = p_vec[module_]
 # 	p = maximum(p_vec) 
 			ed = Int(floor(sample_size_4*p))
-	j = 0:1:ed*2
+	j = 0:1:minimum([20, 2*ed])
 			
 	x  = prob_occurence_module.(p, sample_size_4, j)
 	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurences in sample", ylabel="probability p", title="Chance on № of occurences for specific module", size=((550,300)))	
