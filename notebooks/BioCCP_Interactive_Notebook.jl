@@ -37,7 +37,8 @@ function exp_ccdf(n, t; p_vec = ones(n), m = 1, r = 1, normalize = true)
     for i in 1:n
           Sm = 0
         for j in 1:m
-            Sm += ((p_vec[i]*r*t)^(j-1))/factorial(j-1) #formulas see paper <Introduction
+            Sm += ((p_vec[i]*r*t)^(j-1))/factorial(j-1) 
+				#formulas see paper References [1]
         end 
         P_cdf *= (1 - Sm*exp(-p_vec[i]*r*t))        
     end   
@@ -49,13 +50,20 @@ function approximate_moment(n, fun; p_vec = ones(n), q=1, m = 1, r = 1,
 	        steps = 10000, normalize = true)
     @assert length(p_vec) == n
     a = 0; b = 0
-    while fun(n, b; p_vec = p_vec, m = m, r=r, normalize=normalize) > 0.00001
-        b += 5
+	ϵ = 0.00001
+    while fun(n, b; p_vec = p_vec, m = m, r=r, normalize=normalize) > ϵ
+        b += n
+			if fun(n, b; p_vec = p_vec, m = m, r=r, normalize=normalize) > 1-ϵ
+				a = deepcopy(b)
+			end
     end
     δ = (b-a)/steps; t = a:δ:b
-    qth_moment = q .* sum(δ .* fun.(n, t; p_vec = p_vec, m = m, r=r, normalize = normalize) .* t.^[q-1]) #integration exp_ccdf, see paper References [1]
+    qth_moment = q * (sum(δ .* fun.(n, t; p_vec = p_vec, m = m, r=r, normalize = normalize) .* t.^(q-1)) ) + (a^(q)) #integration exp_ccdf, see paper References [1]
     return qth_moment           
 end
+	
+
+	
 	
 function expectation_minsamplesize(n; p_vec = ones(n), m = 1, r = 1, normalize = true)
     @assert length(p_vec) == n
@@ -88,8 +96,6 @@ function prob_occurrence_module(p, t, j)
 	return (exp(-1*(p*t))*(p*t)^j)/factorial(j) 
 end
 	
-
-
 md"  "
 end
 
@@ -215,7 +221,7 @@ begin
 	if show_modprobs == "🔻 SHOW "   
 	
 	scatter(p_vec, title = "Probability mass function", ylabel = "module probability pⱼ", xlabel = "module j", label="", size = (700, 400))
-	ylims!((0,maximum(p_vec) + maximum(p_vec)-minimum(p_vec) ))
+	ylims!((0,2*maximum(p_vec) ))
 
 	end	
 end
@@ -259,6 +265,9 @@ end
 if show_modprobs == "🔻 SHOW " 
 md"Each biological design in the design space is built by choosing $r module(s) (with replacement) out of a set of $n_string modules according to the module probabilities visualized above."
 end
+
+# ╔═╡ 85c0bd2f-e6a6-4feb-8bd1-f8bb058e10e0
+
 
 # ╔═╡ caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
 md""" **💻 Expected minimum sample size**                                                                                                             $(@bind show_E Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 SHOW ")) 
@@ -342,10 +351,13 @@ begin
 	# #end
 end
 
+# ╔═╡ f1e180e5-82a7-4fab-b894-75be4627af5d
+
+
 # ╔═╡ 22fe8006-0e81-4e0a-a460-28610a55cd97
 md""" **💻 Success probability**                                                                                                                  $(@bind show_success Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE ") )\
 
- + *The probability that the minimum number of designs T is smaller than or equal to a given sample size t.* """
+*The probability that the minimum number of designs T is smaller than or equal to a given sample size t.* """
 
 # ╔═╡ db4371e4-7f86-4db3-b076-12f6cd220b89
 begin
@@ -369,9 +381,12 @@ begin
 	end
 end
 
+# ╔═╡ 3039ac2b-656e-4c2b-9036-cb1d9cdc0790
+
+
 # ╔═╡ ca5a4cef-df67-4a5e-8a86-75a9fe8c6f37
 if show_success == "🔻 SHOW " 
-	md" + *A curve describing the success probability in function of sample size.*"
+	md"*A curve describing the success probability in function of sample size.*"
 end
 
 # ╔═╡ 24f7aae7-d37a-4db5-ace0-c910b178da88
@@ -380,30 +395,24 @@ if show_success == "🔻 SHOW "
 	
 sample_size_initial = 5
 	while (1 - success_probability(n, sample_size_initial; p_vec = p_vec, r = r, m = m)) > 0.0005
-		global sample_size_initial += 100
+		global sample_size_initial += n/10
 	end
 		
-	sample_sizes = 0:10:sample_size_initial
+	sample_sizes = 0:n/10:sample_size_initial
 	successes = success_probability.(n, sample_sizes; p_vec = p_vec, r = r, m = m)
-plot(sample_sizes, successes, title = "Success probability in function of sample size", xlabel = "sample size s", ylabel= "P(s ≤ Sₘᵢₙ)", label = "", legend=:bottomright, size=(600,300), seriestype=:scatter )
+plot(sample_sizes, successes, title = "Success probability in function of sample size", xlabel = "sample size s", ylabel= "P(s ≤ Sₘᵢₙ)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter )
 		end
 	 
 end
+
+# ╔═╡ 4902d817-3967-45cd-a283-b2872cf1b49c
+
 
 # ╔═╡ 37f951ee-885c-4bbe-a05f-7c5e48ff4b6b
 begin
 	#following one-sided version of Chebyshev's inequality.
 	
-	function chebyshev(X, μ, σ)
-    X_μ = X - μ
-    k = abs(X_μ)/σ
-#     if k <= 1 
-#         print(k)
-#     end
-    upperbound_prob  = 1/(k^2)
-    
-	end
-	 
+ 
 	function chebyshev_onesided_larger(X, μ, σ)
 		X_μ = X - μ
 		return σ^2 / (σ^2 + X_μ^2)
@@ -416,8 +425,7 @@ if show_success == "🔻 SHOW "
 if sample_size_1 < E
 	compare = "smaller"
 		if sample_size_1 <= n/r
-			print_sentence = "P(minimum sample size ≤ $sample_size_1) = 0.
-                                                                                        🚨 Enter a sample size that is larger than (№ modules ∈ design space)/(№ modules/design)  to obtain an upperbound probability > 0 🚨"
+			print_sentence = "P(minimum sample size ≤ $sample_size_1) = 0."
 		else
 	prob_chebyshev = chebyshev_onesided_smaller(sample_size_1, E, sd)
 	print_sentence = "P(minimum sample size ≤ $sample_size_1) ≤ $prob_chebyshev. "
@@ -433,12 +441,15 @@ elseif sample_size_1 > E
 		
 end
 
-	md"""+  *Upper bound on probability that minimum sample size is smaller than given sample size t, according to Chebychev's inequality.*:
+	md"""*Upper bound on probability that minimum sample size is smaller than given sample size t, according to Chebychev's inequality.*:
 		
 		
-	              $print_sentence"""
+	                            $print_sentence"""
 	end
 end
+
+# ╔═╡ 702b158b-4f1c-453f-9e70-c00ec22226c3
+
 
 # ╔═╡ dc696281-7a5b-4568-a4c2-8dde90af43f0
 md""" **💻 Expected observed fraction of the total number of modules**                $(@bind show_satur Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE "))\
@@ -461,6 +472,9 @@ begin
 	end
 end
 
+# ╔═╡ 8ce0d3d7-8081-4d08-9189-595e3dc1814f
+
+
 # ╔═╡ 0099145a-5460-4549-9513-054bc1b04eea
 if  show_satur == "🔻 SHOW " 
 md""" *A curve describing the expected fraction of modules observed in function of sample size.* """
@@ -471,18 +485,21 @@ begin
 	if show_satur == "🔻 SHOW " 
 global sample_size_initial_frac = 5
 		while (1 - expectation_fraction_collected(n, sample_size_initial_frac; p_vec = p_vec, r = r)) > 0.0005
-		global	 sample_size_initial_frac += 100
+		global	 sample_size_initial_frac += n/10
 		end
 	
-	sample_sizes_frac = 0:5: sample_size_initial_frac
+	sample_sizes_frac = 0 : n/10 : sample_size_initial_frac
 	
 	fracs = expectation_fraction_collected.(n, sample_sizes_frac; p_vec = p_vec, r = r)
 	
 	plot(sample_sizes_frac, fracs, title = "Expected fraction of modules observed", 
 	    xlabel = "sample size", seriestype=:scatter, 
-	    ylabel= "E[fraction observed]", label = "", size=(700,300))
+	    ylabel= "E[fraction observed]", label = "", size=(700,400))
 end
 end
+
+# ╔═╡ 0b95ccff-4c7b-400d-be61-8ea056ccc87f
+
 
 # ╔═╡ f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
 md""" **💻 Occurrence of a specific module**                                                                                                       $(@bind show_occ Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE "))\
@@ -580,19 +597,26 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─2313198e-3ac9-407b-b0d6-b79e02cefe35
 # ╟─b0291e05-776e-49ce-919f-4ad7de4070af
 # ╟─f098570d-799b-47e2-b692-476a4d95825b
+# ╟─85c0bd2f-e6a6-4feb-8bd1-f8bb058e10e0
 # ╟─caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
 # ╟─6f14a72c-51d3-4759-bb8b-10db1dc260f0
+# ╟─f1e180e5-82a7-4fab-b894-75be4627af5d
 # ╟─22fe8006-0e81-4e0a-a460-28610a55cd97
 # ╟─db4371e4-7f86-4db3-b076-12f6cd220b89
 # ╟─317995ed-bdf4-4f78-bd66-a39ffd1dc452
+# ╟─3039ac2b-656e-4c2b-9036-cb1d9cdc0790
 # ╟─ca5a4cef-df67-4a5e-8a86-75a9fe8c6f37
 # ╟─24f7aae7-d37a-4db5-ace0-c910b178da88
+# ╟─4902d817-3967-45cd-a283-b2872cf1b49c
 # ╟─37f951ee-885c-4bbe-a05f-7c5e48ff4b6b
+# ╟─702b158b-4f1c-453f-9e70-c00ec22226c3
 # ╟─dc696281-7a5b-4568-a4c2-8dde90af43f0
 # ╟─eb92ff7c-0140-468c-8b32-f15d1cf15913
 # ╟─f0eaf96b-0bc0-4194-9a36-886cb1d66e00
+# ╟─8ce0d3d7-8081-4d08-9189-595e3dc1814f
 # ╟─0099145a-5460-4549-9513-054bc1b04eea
 # ╟─7968de5e-5ae8-4ab4-b089-c3d33475af2f
+# ╟─0b95ccff-4c7b-400d-be61-8ea056ccc87f
 # ╟─f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
 # ╟─ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
 # ╟─0e39a993-bb2f-4897-bfe2-5128ec62bef9
