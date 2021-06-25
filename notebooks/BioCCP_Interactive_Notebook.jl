@@ -221,7 +221,7 @@ begin
 	if show_modprobs == "🔻 SHOW "   
 	
 	scatter(p_vec, title = "Probability mass function", ylabel = "module probability pⱼ", xlabel = "module j", label="", size = (700, 400))
-	ylims!((0,2*maximum(p_vec) ))
+	ylims!((0,2*maximum(p_vec)), titlefont=font(10))
 
 	end	
 end
@@ -389,6 +389,9 @@ if show_success == "🔻 SHOW "
 	md"*A curve describing the success probability in function of sample size.*"
 end
 
+# ╔═╡ 9616af0e-810c-4e6a-bc67-cb70e5e620f5
+
+
 # ╔═╡ 24f7aae7-d37a-4db5-ace0-c910b178da88
 begin
 if show_success == "🔻 SHOW " 
@@ -400,7 +403,7 @@ sample_size_initial = 5
 		
 	sample_sizes = 0:n/10:sample_size_initial
 	successes = success_probability.(n, sample_sizes; p_vec = p_vec, r = r, m = m)
-plot(sample_sizes, successes, title = "Success probability in function of sample size", xlabel = "sample size s", ylabel= "P(s ≤ Sₘᵢₙ)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter )
+plot(sample_sizes, successes, title = "Success probability in function of sample size", xlabel = "sample size s", ylabel= "P(s ≤ Sₘᵢₙ)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter, titlefont=font(10),xguidefont=font(9), yguidefont=font(9))
 		end
 	 
 end
@@ -494,7 +497,7 @@ global sample_size_initial_frac = 5
 	
 	plot(sample_sizes_frac, fracs, title = "Expected observed fraction of the total number of modules", 
 	    xlabel = "sample size", seriestype=:scatter, 
-	    ylabel= "E[fraction observed]", label = "", size=(700,400))
+	    ylabel= "E[fraction observed]", label = "", size=(700,400), xguidefont=font(9), yguidefont=font(9), titlefont=font(10))
 end
 end
 
@@ -540,7 +543,7 @@ if show_occ == "🔻 SHOW "
 	j = 0:1:minimum([20, 2*ed])
 			
 	x  = prob_occurrence_module.(p, sample_size_3, j)
-	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample", ylabel="probability p", title="Probability on № of occurrences for specific module", label="")
+	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample", ylabel="probability p", title="Probability on № of occurrences for specific module", label="", size=((600,300)), titlefont=font(10), xguidefont=font(9), yguidefont=font(9))
 	
 		else
 		rank = parse(Int64, rank_string)
@@ -553,7 +556,7 @@ if show_occ == "🔻 SHOW "
 	j = 0:1:minimum([20, 2*ed])
 			
 	x  = prob_occurrence_module.(p, sample_size_4, j)
-	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample", ylabel="probability p", title="Probability on № of occurrences for specific module", size=((600,300)), label="")	
+	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample", ylabel="probability p", title="Probability on № of occurrences for specific module", size=((600,300)), label="",titlefont=font(10), xguidefont=font(9), yguidefont=font(9))	
 			
 		end
 	end
@@ -606,6 +609,7 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─317995ed-bdf4-4f78-bd66-a39ffd1dc452
 # ╟─3039ac2b-656e-4c2b-9036-cb1d9cdc0790
 # ╟─ca5a4cef-df67-4a5e-8a86-75a9fe8c6f37
+# ╟─9616af0e-810c-4e6a-bc67-cb70e5e620f5
 # ╟─24f7aae7-d37a-4db5-ace0-c910b178da88
 # ╟─4902d817-3967-45cd-a283-b2872cf1b49c
 # ╟─37f951ee-885c-4bbe-a05f-7c5e48ff4b6b
