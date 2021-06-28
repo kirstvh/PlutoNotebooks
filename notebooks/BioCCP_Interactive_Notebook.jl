@@ -180,6 +180,10 @@ md"""
 
 # ╔═╡ b0291e05-776e-49ce-919f-4ad7de4070af
 begin
+	function p_power(n, k)
+    	p = (1:n) .^ -k
+    	return p ./ sum(p)
+	end
 
 	if ps == "Equal"
 	 	
@@ -212,8 +216,7 @@ begin
 		
 		if distribution == "Zipf's law"
 			ratio = parse(Float64, pmaxpmin_string)
-			α = exp(log(ratio)/(n-1))
-			p_vec = collect(α.^-(1:n))
+			p_vec = p_power(n, log(ratio)/log(n))
 			p_vec = p_vec ./ sum(p_vec)
 		end
 	end
