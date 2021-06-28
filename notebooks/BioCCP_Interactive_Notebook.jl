@@ -224,7 +224,7 @@ begin
 	if show_modprobs == "🔻 SHOW "   
 	
 	scatter(p_vec, title = "Probability mass function", ylabel = "module probability pⱼ", xlabel = "module j", label="", size = (700, 400))
-	ylims!((0,2*maximum(p_vec)), titlefont=font(10))
+	ylims!((0,2*maximum(p_vec)), titlefont=font(10), xguidefont=font(9), yguidefont=font(9))
 
 	end	
 end
