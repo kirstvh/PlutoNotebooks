@@ -110,7 +110,8 @@ This notebook provides functions and corresponding visualizations to determine e
 begin
 md""" 
  
-👇 **COMPLETE THE FIELDS BELOW** 👇
+👇 **COMPLETE THE FIELDS BELOW** 👇\
+	*First, fill in the input parameters of your problem setting. Then, click outside the text field to update the report.*
 
 № modules in design space:                       $(@bind n_string TextField(default = "100")) \
 	
