@@ -136,7 +136,7 @@ end
 begin
 md""" 
  
-№ times you want to observe each module:         $(@bind m NumberField(1:20))\
+№ times you want to observe each module:           $(@bind m NumberField(1:20))\
 	                                            = 	   *How many times do you want to observe each                                                of the available modules in the total set of                                               designs?*
  """
 	
@@ -147,7 +147,7 @@ begin
 md""" 
  
  
-Abundances of modules during library generation:       $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                                             =    *How are the abundances of the modules                                                  distributed during combinatorial generation of                                                   the designs? Is each module equally likely to                                                         be included in a design?*"""                    
+Abundances of modules during library generation:        $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                                             =    *How are the abundances of the modules                                                  distributed during combinatorial generation of                                                   the designs? Is each module equally likely to                                                         be included in a design?*"""                    
 	
 end
 
