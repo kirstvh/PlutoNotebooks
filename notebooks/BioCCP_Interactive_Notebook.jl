@@ -102,9 +102,12 @@ end
 # ╔═╡ 4d246460-af05-11eb-382b-590e60ba61f5
 md"## Collecting Coupons in combinatorial biotechnology
 
-This notebook provides functions and visualizations to determine expected minimum sample sizes for biotechnological experiments, based on the mathematical framework of the Coupon Collector Problem (references see [^1], [^2]).
+This notebook provides functions and corresponding visualizations to determine expected minimum sample sizes for combinatorial biotechnology experiments, based on the mathematical framework of the Coupon Collector Problem (references see [^1], [^2]).
 
 "
+
+# ╔═╡ 34c0d064-ee60-4d0b-813c-baaf300af2fe
+
 
 # ╔═╡ a8c81622-194a-443a-891b-bfbabffccff1
 begin
@@ -136,7 +139,7 @@ end
 begin
 md""" 
  
-№ times of you want to observe each module:         $(@bind m NumberField(1:20))\
+№ times you want to observe each module:         $(@bind m NumberField(1:20))\
 	                                            = 	   *How many times do you want to observe each                                                of the available modules in the total set of                                               designs?*
  """
 	
@@ -147,7 +150,7 @@ begin
 md""" 
  
  
-Abundances of modules during library generation:       $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                                             =    *How are the abundances of the modules                                                distributed during combinatorial generation of                                                 the designs? Is each module equally likely to                                                      be included in a design?*"""                    
+Abundances of modules during library generation:       $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                                             =    *How are the abundances of the modules                                                  distributed during combinatorial generation of                                                   the designs? Is each module equally likely to                                                         be included in a design?*"""                    
 	
 end
 
@@ -622,6 +625,7 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─4d246460-af05-11eb-382b-590e60ba61f5
 # ╟─dc734eab-c244-4337-a0f3-469d77045eec
 # ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
+# ╠═34c0d064-ee60-4d0b-813c-baaf300af2fe
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
 # ╟─123d5b94-5772-42dc-bf74-d964d023b209
 # ╟─c8164a38-fcf9-4f1b-b697-46c8ce978fce
