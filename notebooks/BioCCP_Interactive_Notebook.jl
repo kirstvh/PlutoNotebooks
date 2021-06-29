@@ -106,9 +106,6 @@ This notebook provides functions and corresponding visualizations to determine e
 
 "
 
-# ╔═╡ 232a8566-7d58-4cfb-a93b-5353fd4c5a37
-
-
 # ╔═╡ a8c81622-194a-443a-891b-bfbabffccff1
 begin
 md""" 
@@ -628,7 +625,6 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─4d246460-af05-11eb-382b-590e60ba61f5
 # ╟─dc734eab-c244-4337-a0f3-469d77045eec
 # ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
-# ╠═232a8566-7d58-4cfb-a93b-5353fd4c5a37
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
 # ╟─123d5b94-5772-42dc-bf74-d964d023b209
 # ╟─c8164a38-fcf9-4f1b-b697-46c8ce978fce
