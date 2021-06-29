@@ -159,26 +159,28 @@ begin
 		distribution = "Equal"
 	end
 		if ps == "Unequal"	
-	md""" 	                         ↳     Specify distribution:                         
+	md""" ↳     Specify distribution:                                                                         
 	$(@bind distribution Select(["Bell curve", "Zipf's law", "Custom vector"], default = " "))"""
 		end	
 end
 
 # bell curve ipv normale distrbution, neem quantielen, niet samplen, vaste uitkomst
 
-# ╔═╡ b17f3b8a-61ee-4563-97cd-19ff049a8e1e
+# ╔═╡ 57e017dc-3ecf-4380-a48d-333851f8db9c
 begin
-	if distribution == "Bell curve"					
-			md"""                                    pₘₐₓ/pₘᵢₙ:  $(@bind pmaxpmin_str TextField(default = "4")) 
-                                            """
-			end
+	if ps == "Unequal"	
+		md"""
+- *If the exact module probabilities are known, choose "Custom vector".* 
+- *Otherwise, select:*
+  - *"Zipf's law" (when you expect a small number of modules occur quite often, and a very large number of modules occur at the statistical equivalent of zero, but, they do occur.)* 
+  - *"Bell curve" (when you expect a large number of modules to occur at an average probability and a smaller number of modules to occur with a small or large probability)* """
+	end
 end
 
-# ╔═╡ e3b4c2d8-b78c-467e-a863-5eecb8ec58dc
+# ╔═╡ b17f3b8a-61ee-4563-97cd-19ff049a8e1e
 begin
-	if distribution == "Zipf's law"
-		md"""                                       pₘₐₓ/pₘᵢₙ:   $(@bind pmaxpmin_string TextField(default = "4")) 
-                                            """
+	if distribution == "Zipf's law" || distribution == "Bell curve"	
+		md"""                         ↳     Specify pₘₐₓ/pₘᵢₙ:   $(@bind pmaxpmin_string TextField(default = "4"))"""
 			end
 
 end
@@ -222,7 +224,7 @@ begin
 		
 	elseif ps == "Unequal"
 		if distribution == "Bell curve"
-			ratio = parse(Float64, pmaxpmin_str)
+			ratio = parse(Float64, pmaxpmin_string)
 			ab1 = 1
 			ab2 = ratio*ab1
 			μ = (ab1+ab2)/2
@@ -275,7 +277,7 @@ end
 # ╔═╡ 2313198e-3ac9-407b-b0d6-b79e02cefe35
 begin
 	if show_modprobs == "🔻 SHOW "  && distribution == "Bell curve"
-md"""For $n_string modules of which the probabilities form a bell curve with ratio pₘₐₓ/pₘᵢₙ = $pmaxpmin_str , we follow the percentiles of a normal distribution to generate the probability vector.
+md"""For $n_string modules of which the probabilities form a bell curve with ratio pₘₐₓ/pₘᵢₙ = $pmaxpmin_string , we follow the percentiles of a normal distribution to generate the probability vector.
 
 We consider μ to be the mean module probability and σ to be the standard deviation of the module probabilities.
 		
@@ -628,8 +630,8 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─c8164a38-fcf9-4f1b-b697-46c8ce978fce
 # ╟─d6c6be55-fc94-480a-bc58-ca67b0c44568
 # ╟─45507d48-d75d-41c9-a018-299e209f900e
+# ╟─57e017dc-3ecf-4380-a48d-333851f8db9c
 # ╟─b17f3b8a-61ee-4563-97cd-19ff049a8e1e
-# ╟─e3b4c2d8-b78c-467e-a863-5eecb8ec58dc
 # ╟─2639e3fb-ccbb-44de-bd15-1c5dbf6c1539
 # ╟─44d4dfee-3073-49aa-867c-3abea10e6e37
 # ╟─f6ebf9fb-0a29-4cb4-a544-6c6e32bedcc4
