@@ -104,9 +104,9 @@ md"""
 👇 **COMPLETE THE FIELDS BELOW** 👇\
 	*First, fill in the input parameters of your problem setting. Then, click outside the text field to update the report.*
 
-№ modules in design space:                       $(@bind n_string TextField(default = "100")) \
+**№ modules in design space** (`n`):                       $(@bind n_string TextField(default = "100")) \
 	    
-         (`n`)                                =   *How many different modules or building                                                 blocks are available to construct designs?*
+                                               =   *How many different modules or building                                                 blocks are available to construct designs?*
  """
 	
 end
@@ -117,24 +117,18 @@ md"""
  
  
 	
-№ modules per design:                            $(@bind r NumberField(1:20))\
+**№ modules per design** (`r`):                          $(@bind r NumberField(1:20))\
 	
-       (`r`)                                  =    *How many modules are combined in a single                                               design?*
+                                              =    *How many modules are combined in a single                                               design?*
  """
 	
 end
 
 # ╔═╡ 224bbc82-4f02-417a-95a4-0ffcb2247a17
 begin
-md""" 
- 
- 
+md""" **Efficiency library generation** (`ϵ`):                     $(@bind ϵ_percent TextField(default="100"))%\
 	
-Efficiency library generation:                       $(@bind ϵ_percent TextField(default="100"))%\
-	
-        (`ϵ`)                                 =    *Are there inefficiencies when generating the                                              designs, causing some designs to consist of less                                               than r modules?*
- """
-	
+                                              =    *Are there inefficiencies when generating the                                              designs, causing some designs to consist of less                                               than r modules?*"""	
 end
 
 # ╔═╡ 88b51d0b-2308-4cf0-88b9-2b1ed2b2416f
@@ -144,8 +138,8 @@ end
 begin
 md""" 
  
-№ times you want to observe each module:           $(@bind m NumberField(1:20))\
-	            (`m`)                             = 	   *How many times do you want to observe each                                                of the available modules in the total set of                                               designs?*
+**№ times you want to observe each module** (`m`):            $(@bind m NumberField(1:20))\
+	                                               = 	   *How many times do you want to observe                                                 each of the available modules in the total set                                                   of designs?*
  """
 	
 end
@@ -155,9 +149,9 @@ begin
 md""" 
  
  
-Abundances of modules during library generation:        $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                            
-                (`p`)
-	                          =    *How are the abundances of the modules                                                  distributed during combinatorial generation of                                                   the designs? Is each module equally likely to                                                         be included in a design?*"""                    
+**Abundances of modules during library generation** (`p`):   $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                            
+                
+	   =    *How are the abundances of the modules                                                  distributed during combinatorial generation of                                                   the designs? Is each module equally likely to                                                         be included in a design?*"""                    
 	
 end
 
@@ -168,7 +162,7 @@ begin
 		distribution = "Equal"
 	end
 		if ps == "Unequal"	
-	md""" ↳     Specify distribution:                                                                         
+	md""" ↳     **Specify distribution**:                                                                           
 	$(@bind distribution Select(["Bell curve", "Zipf's law", "Custom vector"], default = " "))"""
 		end	
 end
@@ -189,7 +183,7 @@ end
 # ╔═╡ b17f3b8a-61ee-4563-97cd-19ff049a8e1e
 begin
 	if distribution == "Zipf's law" || distribution == "Bell curve"	
-		md"""                         ↳     Specify pₘₐₓ/pₘᵢₙ:   $(@bind pmaxpmin_string TextField(default = "4"))"""
+		md"""                         ↳     **Specify pₘₐₓ/pₘᵢₙ**:   $(@bind pmaxpmin_string TextField(default = "4"))"""
 			end
 
 end
@@ -274,7 +268,7 @@ end
 # ╔═╡ 87c3f5cd-79bf-4ad8-b7f8-3e98ec548a9f
 begin
 	if show_modprobs == "🔻 SHOW "  && distribution == "Bell curve"
-		histogram(p_vec, normalize=:probability,  bar_edges=false,  size = (500, 250), orientation=:v, bins=[(μ -  3*σ)/sum(p_vec_unnorm), (μ - 2*σ)/sum(p_vec_unnorm), (μ-σ)/sum(p_vec_unnorm), (μ + σ)/sum(p_vec_unnorm), (μ + 2*σ)/sum(p_vec_unnorm), (μ +  3.2*σ)/sum(p_vec_unnorm)], titlefont=font(10), xguidefont=font(9), yguidefont=font(9), label="")
+		histogram(p_vec, normalize=:probability,  bar_edges=false,  size = (550, 320), orientation=:v, bins=[(μ -  3*σ)/sum(p_vec_unnorm), (μ - 2*σ)/sum(p_vec_unnorm), (μ-σ)/sum(p_vec_unnorm), (μ + σ)/sum(p_vec_unnorm), (μ + 2*σ)/sum(p_vec_unnorm), (μ +  3.2*σ)/sum(p_vec_unnorm)], titlefont=font(10), xguidefont=font(9), yguidefont=font(9), label="")
 		# if distribution == "Normally distributed"
 		# 	plot!(x->pdf(Normal(μ, σ), x), xlim=xlims())
 		# 	xlabel!("Abundance"); ylabel!("probability"); title!("Distribution of module abundances")
@@ -518,9 +512,9 @@ if show_occ == "🔻 SHOW "
 		p = parse(Float64, p_string)
 		sample_size_3 = parse(Int64, sample_size_3_string)
 		ed = Int(floor(sample_size_3*ϵ*p))
-		j = 0:1:minimum([20, 5*ed])	
+		j = 0:1:minimum([20, 4*ed])	
 		x  = prob_occurrence_module.(p, sample_size_3*ϵ, j)
-	 	plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample",
+	 	plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
 				ylabel="probability p", 
 				title="Probability on № of occurrences for specific module", 
 				label="", size=((600,300)), 
@@ -531,9 +525,9 @@ if show_occ == "🔻 SHOW "
 			p = p_vec[rank]
 			sample_size_4 = parse(Int64, sample_size_4_string)
 			ed = Int(floor(sample_size_4*ϵ*p))
-			j = 0:1:minimum([20, 5*ed])	
+			j = 0:1:minimum([20, 4*ed])	
 		x  = prob_occurrence_module.(p, sample_size_4*ϵ, j)
-	 	plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample",
+	 	plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
 				ylabel="probability p", 
 				title="Probability on № of occurrences for specific module", 
 				size=((600,300)), label="",titlefont=font(10), 
