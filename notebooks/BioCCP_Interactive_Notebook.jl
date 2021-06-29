@@ -13,15 +13,6 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ dc734eab-c244-4337-a0f3-469d77045eec
-begin
-	import Pkg
-	Pkg.activate(mktempdir())
-	using Pkg
-	Pkg.add(["Plots", "PlutoUI"])
-end
-
-
 # ╔═╡ e1a7f2da-a38b-4b3c-a238-076769e46408
 begin	
 using Plots, PlutoUI
@@ -623,7 +614,6 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 
 # ╔═╡ Cell order:
 # ╟─4d246460-af05-11eb-382b-590e60ba61f5
-# ╟─dc734eab-c244-4337-a0f3-469d77045eec
 # ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
 # ╟─123d5b94-5772-42dc-bf74-d964d023b209
