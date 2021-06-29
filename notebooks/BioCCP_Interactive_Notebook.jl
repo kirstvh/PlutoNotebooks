@@ -106,6 +106,9 @@ This notebook provides functions and corresponding visualizations to determine e
 
 "
 
+# ╔═╡ 232a8566-7d58-4cfb-a93b-5353fd4c5a37
+
+
 # ╔═╡ a8c81622-194a-443a-891b-bfbabffccff1
 begin
 md""" 
@@ -265,7 +268,7 @@ end
 # ╔═╡ 87c3f5cd-79bf-4ad8-b7f8-3e98ec548a9f
 begin
 	if show_modprobs == "🔻 SHOW "  && distribution == "Bell curve"
-		histogram(p_vec, normalize=:probability,  bar_edges=false,  size = (650, 340), orientation=:v, bins=[(μ -  3*σ)/sum(p_vec_unnorm), (μ - 2*σ)/sum(p_vec_unnorm), (μ-σ)/sum(p_vec_unnorm), (μ + σ)/sum(p_vec_unnorm), (μ + 2*σ)/sum(p_vec_unnorm), (μ +  3*σ)/sum(p_vec_unnorm)], titlefont=font(10), xguidefont=font(9), yguidefont=font(9))
+		histogram(p_vec, normalize=:probability,  bar_edges=false,  size = (500, 250), orientation=:v, bins=[(μ -  3*σ)/sum(p_vec_unnorm), (μ - 2*σ)/sum(p_vec_unnorm), (μ-σ)/sum(p_vec_unnorm), (μ + σ)/sum(p_vec_unnorm), (μ + 2*σ)/sum(p_vec_unnorm), (μ +  3.2*σ)/sum(p_vec_unnorm)], titlefont=font(10), xguidefont=font(9), yguidefont=font(9), label="")
 		# if distribution == "Normally distributed"
 		# 	plot!(x->pdf(Normal(μ, σ), x), xlim=xlims())
 		# 	xlabel!("Abundance"); ylabel!("probability"); title!("Distribution of module abundances")
@@ -625,6 +628,7 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─4d246460-af05-11eb-382b-590e60ba61f5
 # ╟─dc734eab-c244-4337-a0f3-469d77045eec
 # ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
+# ╠═232a8566-7d58-4cfb-a93b-5353fd4c5a37
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
 # ╟─123d5b94-5772-42dc-bf74-d964d023b209
 # ╟─c8164a38-fcf9-4f1b-b697-46c8ce978fce
