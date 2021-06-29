@@ -105,8 +105,8 @@ md"""
 	*First, fill in the input parameters of your problem setting. Then, click outside the text field to update the report.*
 
 № modules in design space:                       $(@bind n_string TextField(default = "100")) \
-	
-                                            =   *How many different modules or building                                                 blocks are available to construct designs?*
+	    
+         (`n`)                                =   *How many different modules or building                                                 blocks are available to construct designs?*
  """
 	
 end
@@ -119,17 +119,33 @@ md"""
 	
 № modules per design:                            $(@bind r NumberField(1:20))\
 	
-                                            =    *How many modules are combined in a single                                               design?*
+       (`r`)                                  =    *How many modules are combined in a single                                               design?*
  """
 	
 end
+
+# ╔═╡ 224bbc82-4f02-417a-95a4-0ffcb2247a17
+begin
+md""" 
+ 
+ 
+	
+Efficiency library generation:                       $(@bind ϵ_percent TextField(default="100"))%\
+	
+        (`ϵ`)                                 =    *Are there inefficiencies when generating the                                              designs, causing some designs to consist of less                                               than r modules?*
+ """
+	
+end
+
+# ╔═╡ 88b51d0b-2308-4cf0-88b9-2b1ed2b2416f
+ϵ = parse(Float64, ϵ_percent)/100;
 
 # ╔═╡ c8164a38-fcf9-4f1b-b697-46c8ce978fce
 begin
 md""" 
  
 № times you want to observe each module:           $(@bind m NumberField(1:20))\
-	                                            = 	   *How many times do you want to observe each                                                of the available modules in the total set of                                               designs?*
+	            (`m`)                             = 	   *How many times do you want to observe each                                                of the available modules in the total set of                                               designs?*
  """
 	
 end
@@ -139,7 +155,9 @@ begin
 md""" 
  
  
-Abundances of modules during library generation:        $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                                             =    *How are the abundances of the modules                                                  distributed during combinatorial generation of                                                   the designs? Is each module equally likely to                                                         be included in a design?*"""                    
+Abundances of modules during library generation:        $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                            
+                (`p`)
+	                          =    *How are the abundances of the modules                                                  distributed during combinatorial generation of                                                   the designs? Is each module equally likely to                                                         be included in a design?*"""                    
 	
 end
 
@@ -299,83 +317,21 @@ end
 # ╔═╡ caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
 md""" **💻 Expected minimum sample size**                                                                                                             $(@bind show_E Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 SHOW ")) 
 \
-*The expected minimum number of designs to observe each module at least $m times in the sampled set of designs.* """   
+*The expected minimum number of designs to observe each module at least $m time(s) in the sampled set of designs.* """   
 
 # ╔═╡ 6f14a72c-51d3-4759-bb8b-10db1dc260f0
 begin
 	if show_E == "🔻 SHOW "   
-		E = Int(expectation_minsamplesize(n; p_vec = p_vec, m=m, r = r))
-		sd = Int(std_minsamplesize(n; p_vec = p_vec, m=m, r = r))
+		E = Int(ceil(expectation_minsamplesize(n; p_vec = p_vec, m=m, r = r)/ϵ))
+		sd = Int(ceil(std_minsamplesize(n; p_vec = p_vec, m=m, r = r)/ϵ))
 		
 			md""" 
      `Expected minimum sample size    `     = **$E designs**\
 		
      `Standard deviation              `                = **$sd designs**  	"""
 	end
-	# begin
-		
-	# 	#E_vec = []
-	# 	#sd_vec = []
-			 
-	# 	#if ps == "Unequal" && probs_unequal_norm
-	# 			#iter = 10
-	# 			#for i in 1:iter
-	# 				#p_vec_i = rand(Normal(μ,  σ), n)
-	# 				#p_vec_i = p_vec_i ./ sum(p_vec_i)
-	# 				#E_i = expectation_minsamplesize(n; p_vec = p_vec_i, m=m, q = q)
-	# 				#sd_i = std_minsamplesize(n; p_vec = p_vec_i, m=m, q=q)
-	# 				#push!(E_vec, E_i)
-	# 				#push!(sd_vec, sd_i)
-	# 			#end
-	# 			#E = Int(ceil(mean(E_vec)))
-	# 			#sd = Int(ceil(mean(sd_vec)))
-	# 			#E_CI_lhs = Int(ceil( E - quantile(Normal(), 1-0.05/2)*sd/sqrt(iter)))
-	# 			#E_CI_rhs = Int(ceil(E + quantile(Normal(), 1-0.05/2)*sd/sqrt(iter)))
-	# 			#sd_CI_lhs = Int(ceil( sd - quantile(Normal(), 1-0.05/2)*sd/sqrt(iter)))
-	# 			#sd_CI_rhs = Int(ceil(sd + quantile(Normal(), 1-0.05/2)*sd/sqrt(iter)))
-				
-			
-	# 		#md""" 
-	# 		#``` 
-	# 		#Expected minimum sample size E[Tp]
-	# 		#```		 	
-	# 		#= **$E designs**    -------- 95% CI :  [$E_CI_lhs, $E_CI_rhs]
-		
-	# 		#``` 
-	# 		#Standard deviation sd[Tp]  
-	# 		#```	
-		
-	# 		#= **$sd designs**   -------- 95% CI :  [$sd_CI_lhs, $sd_CI_rhs]
-		
-	# 		#---------------
-	# 		#"""
-		
-	# 		#else
-	
-	# #	E = expectation_minsamplesize(n; p_vec = p_vec, m=m, q = q)
-	# #	sd = std_minsamplesize(n; p_vec = p_vec, m=m, q=q)
-			
-			
-	# #		md""" 
-	# #		``` 
-	# #		Expected minimum sample size E[Tp]
-	# #		```		 	
-	# #		= **$E designs**    
-		
-	# #		``` 
-	# #		Standard deviation sd[Tp]  
-	# #		```	
-		
-	# #		= **$sd designs**   
-		
-	# #		---------------
-	# #		"""
-				 
-	# 		#end
-			
-			
-		 
-	# #end
+	 
+ 
 end
 
 # ╔═╡ f1e180e5-82a7-4fab-b894-75be4627af5d
@@ -399,8 +355,7 @@ end
 begin
 	if show_success == "🔻 SHOW " 
 	sample_size_1 = parse(Int64, sample_size_1_string);
-	
-	p_success = success_probability(n, sample_size_1; p_vec = p_vec, m = m, r = r)
+	p_success = success_probability(n, sample_size_1*ϵ; p_vec = p_vec, m = m, r = r)
 	
 	md""" 
               ↳ `Success probability F(t)`  = **$p_success**\
@@ -424,12 +379,12 @@ begin
 if show_success == "🔻 SHOW " 
 	
 sample_size_initial = 5
-	while (1 - success_probability(n, sample_size_initial; p_vec = p_vec, r = r, m = m)) > 0.0005
+	while (1 - success_probability(n, sample_size_initial*ϵ; p_vec = p_vec, r = r, m = m)) > 0.0005
 		global sample_size_initial += n/10
 	end
 		
-	sample_sizes = 0:n/10:sample_size_initial
-	successes = success_probability.(n, sample_sizes; p_vec = p_vec, r = r, m = m)
+	sample_sizes = ceil.(0:n/10:sample_size_initial)
+	successes = success_probability.(n, ceil.(sample_sizes*ϵ); p_vec = p_vec, r = r, m = m)
 plot(sample_sizes, successes, title = "Success probability in function of sample size", xlabel = "sample size s", ylabel= "P(s ≤ Sₘᵢₙ)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter, titlefont=font(10),xguidefont=font(9), yguidefont=font(9))
 		end
 	 
@@ -457,13 +412,13 @@ if sample_size_1 < E
 		if sample_size_1 <= n/r
 			print_sentence = "P(minimum sample size ≤ $sample_size_1) = 0."
 		else
-	prob_chebyshev = chebyshev_onesided_smaller(sample_size_1, E, sd)
+	prob_chebyshev = chebyshev_onesided_smaller(sample_size_1*ϵ, E, sd)
 	print_sentence = "P(minimum sample size ≤ $sample_size_1) ≤ $prob_chebyshev. "
 		end
 		
 elseif sample_size_1 > E
 	compare = "greater"
-	prob_chebyshev = chebyshev_onesided_larger(sample_size_1, E, sd)
+	prob_chebyshev = chebyshev_onesided_larger(sample_size_1*ϵ, E, sd)
 	print_sentence = "P(minimum sample size ≥ $sample_size_1) ≤ $prob_chebyshev. "	
 		
 	elseif sample_size_1==E
@@ -495,7 +450,7 @@ end
 begin
 	if show_satur == "🔻 SHOW " 
 	sample_size_2 = parse(Int64, sample_size_2_string)
-	E_fraction = expectation_fraction_collected(n, sample_size_2; p_vec = p_vec, r = r)
+	E_fraction = expectation_fraction_collected(n, sample_size_2*ϵ; p_vec = p_vec, r = r)
 	
 	md""" 	            ↳ `Expected fraction observed`	= **$E_fraction**
 	"""	
@@ -514,13 +469,13 @@ md""" *A curve describing the expected fraction of modules observed in function 
 begin
 	if show_satur == "🔻 SHOW " 
 global sample_size_initial_frac = 5
-		while (1 - expectation_fraction_collected(n, sample_size_initial_frac; p_vec = p_vec, r = r)) > 0.0005
+		while (1 - expectation_fraction_collected(n, sample_size_initial_frac*ϵ; p_vec = p_vec, r = r)) > 0.0005
 		global	 sample_size_initial_frac += n/10
 		end
 	
 	sample_sizes_frac = 0 : n/10 : sample_size_initial_frac
 	
-	fracs = expectation_fraction_collected.(n, sample_sizes_frac; p_vec = p_vec, r = r)
+	fracs = expectation_fraction_collected.(n, sample_sizes_frac*ϵ; p_vec = p_vec, r = r)
 	
 	plot(sample_sizes_frac, fracs, title = "Expected observed fraction of the total number of modules", 
 	    xlabel = "sample size", seriestype=:scatter, 
@@ -537,8 +492,8 @@ md""" **💻 Occurrence of a specific module**           �
 
 # ╔═╡ ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
 if show_occ == "🔻 SHOW " && distribution != "Zipf's law"
-	md"""    👉 Enter the probability of the module of interest: $(@bind p_string TextField(default="0.01"))\
-	    👉 Enter the sample size of interest:                $(@bind sample_size_3_string TextField(default="300"))
+	md"""    👉 Enter the probability of the module of interest: $(@bind p_string TextField(default="0.005"))\
+	    👉 Enter the sample size of interest:                $(@bind sample_size_3_string TextField(default="500"))
 	""" 	
 	
 end
@@ -557,34 +512,32 @@ end
 
 # ╔═╡ 6acb0a97-6469-499f-a5cf-6335d6aa909a
 begin
-
 	
 if show_occ == "🔻 SHOW " 
 	if distribution != "Zipf's law"
-	p = parse(Float64, p_string)
-	sample_size_3 = parse(Int64, sample_size_3_string)
- 	# module_ = 1
-# 	p = p_vec[module_]
-# 	p = maximum(p_vec) 
-	ed = Int(floor(sample_size_3*p))
-	j = 0:1:minimum([20, 2*ed])
-			
-	x  = prob_occurrence_module.(p, sample_size_3, j)
-	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample", ylabel="probability p", title="Probability on № of occurrences for specific module", label="", size=((600,300)), titlefont=font(10), xguidefont=font(9), yguidefont=font(9))
+		p = parse(Float64, p_string)
+		sample_size_3 = parse(Int64, sample_size_3_string)
+		ed = Int(floor(sample_size_3*ϵ*p))
+		j = 0:1:minimum([20, 5*ed])	
+		x  = prob_occurrence_module.(p, sample_size_3*ϵ, j)
+	 	plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample",
+				ylabel="probability p", 
+				title="Probability on № of occurrences for specific module", 
+				label="", size=((600,300)), 
+				titlefont=font(10), xguidefont=font(9), yguidefont=font(9))
 	
 		else
-		rank = parse(Int64, rank_string)
-		p = p_vec[rank]
-	sample_size_4 = parse(Int64, sample_size_4_string)
- 	# module_ = 1
-# 	p = p_vec[module_]
-# 	p = maximum(p_vec) 
-			ed = Int(floor(sample_size_4*p))
-	j = 0:1:minimum([20, 2*ed])
-			
-	x  = prob_occurrence_module.(p, sample_size_4, j)
-	 plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample", ylabel="probability p", title="Probability on № of occurrences for specific module", size=((600,300)), label="",titlefont=font(10), xguidefont=font(9), yguidefont=font(9))	
-			
+			rank = parse(Int64, rank_string)
+			p = p_vec[rank]
+			sample_size_4 = parse(Int64, sample_size_4_string)
+			ed = Int(floor(sample_size_4*ϵ*p))
+			j = 0:1:minimum([20, 5*ed])	
+		x  = prob_occurrence_module.(p, sample_size_4*ϵ, j)
+	 	plot(j,x, seriestype=[:line, :scatter], xlabel="№ occurrences in sample",
+				ylabel="probability p", 
+				title="Probability on № of occurrences for specific module", 
+				size=((600,300)), label="",titlefont=font(10), 
+				xguidefont=font(9), yguidefont=font(9))			
 		end
 	end
 end
@@ -617,6 +570,8 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
 # ╟─123d5b94-5772-42dc-bf74-d964d023b209
+# ╟─224bbc82-4f02-417a-95a4-0ffcb2247a17
+# ╟─88b51d0b-2308-4cf0-88b9-2b1ed2b2416f
 # ╟─c8164a38-fcf9-4f1b-b697-46c8ce978fce
 # ╟─d6c6be55-fc94-480a-bc58-ca67b0c44568
 # ╟─45507d48-d75d-41c9-a018-299e209f900e
