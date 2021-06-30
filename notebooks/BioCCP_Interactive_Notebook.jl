@@ -325,8 +325,8 @@ md""" **💻 Expected minimum sample size**            �
 # ╔═╡ 6f14a72c-51d3-4759-bb8b-10db1dc260f0
 begin
 	if show_E == "🔻 SHOW "   
-		E = Int(ceil(expectation_minsamplesize(n; p_vec = p_vec, m=m, r = r)/ϵ))
-		sd = Int(ceil(std_minsamplesize(n; p_vec = p_vec, m=m, r = r)/ϵ))
+		E = Int(ceil(expectation_minsamplesize(n; p_vec = p_vec, m=m, r = r*ϵ)))
+		sd = Int(ceil(std_minsamplesize(n; p_vec = p_vec, m=m, r = r*ϵ)))
 		
 			md""" 
      `Expected minimum sample size    `     = **$E designs**\
@@ -358,7 +358,7 @@ end
 begin
 	if show_success == "🔻 SHOW " 
 	sample_size_1 = parse(Int64, sample_size_1_string);
-	p_success = success_probability(n, sample_size_1*ϵ; p_vec = p_vec, m = m, r = r)
+	p_success = success_probability(n, sample_size_1; p_vec = p_vec, m = m, r = r*ϵ)
 	
 	md""" 
               ↳ `Success probability F(t)`  = **$p_success**\
@@ -382,12 +382,12 @@ begin
 if show_success == "🔻 SHOW " 
 	
 sample_size_initial = 5
-	while (1 - success_probability(n, sample_size_initial*ϵ; p_vec = p_vec, r = r, m = m)) > 0.0005
+	while (1 - success_probability(n, sample_size_initial; p_vec = p_vec, r = r*ϵ, m = m)) > 0.0005
 		global sample_size_initial += n/10
 	end
 		
 	sample_sizes = ceil.(0:n/10:sample_size_initial)
-	successes = success_probability.(n, ceil.(sample_sizes*ϵ); p_vec = p_vec, r = r, m = m)
+	successes = success_probability.(n, ceil.(sample_sizes); p_vec = p_vec, r = r*ϵ, m = m)
 plot(sample_sizes, successes, title = "Success probability in function of sample size", xlabel = "sample size s", ylabel= "P(s ≤ Sₘᵢₙ)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter, titlefont=font(10),xguidefont=font(9), yguidefont=font(9))
 		end
 	 
@@ -453,7 +453,7 @@ end
 begin
 	if show_satur == "🔻 SHOW " 
 	sample_size_2 = parse(Int64, sample_size_2_string)
-	E_fraction = expectation_fraction_collected(n, sample_size_2*ϵ; p_vec = p_vec, r = r)
+	E_fraction = expectation_fraction_collected(n, sample_size_2; p_vec = p_vec, r = r*ϵ)
 	
 	md""" 	            ↳ `Expected fraction observed`	= **$E_fraction**
 	"""	
@@ -472,13 +472,13 @@ md""" *A curve describing the expected fraction of modules observed in function 
 begin
 	if show_satur == "🔻 SHOW " 
 global sample_size_initial_frac = 5
-		while (1 - expectation_fraction_collected(n, sample_size_initial_frac*ϵ; p_vec = p_vec, r = r)) > 0.0005
+		while (1 - expectation_fraction_collected(n, sample_size_initial_frac; p_vec = p_vec, r = r*ϵ)) > 0.0005
 		global	 sample_size_initial_frac += n/10
 		end
 	
 	sample_sizes_frac = 0 : n/10 : sample_size_initial_frac
 	
-	fracs = expectation_fraction_collected.(n, sample_sizes_frac*ϵ; p_vec = p_vec, r = r)
+	fracs = expectation_fraction_collected.(n, sample_sizes_frac; p_vec = p_vec, r = r*ϵ)
 	
 	plot(sample_sizes_frac, fracs, title = "Expected observed fraction of the total number of modules", 
 	    xlabel = "sample size", seriestype=:scatter, 
