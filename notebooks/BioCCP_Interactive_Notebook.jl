@@ -164,9 +164,7 @@ begin
 	md""" ↳     **Specify distribution**:                                                                           
 	$(@bind distribution Select(["Bell curve", "Zipf's law", "Custom vector"], default = " "))"""
 		end	
-end
-
-# bell curve ipv normale distrbution, neem quantielen, niet samplen, vaste uitkomst
+end 
 
 # ╔═╡ 57e017dc-3ecf-4380-a48d-333851f8db9c
 begin
