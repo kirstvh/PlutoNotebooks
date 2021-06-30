@@ -99,16 +99,13 @@ This notebook provides functions and corresponding visualizations to determine e
 
 # ╔═╡ a8c81622-194a-443a-891b-bfbabffccff1
 begin
+	
 md""" 
  
 👇 **COMPLETE THE FIELDS BELOW** 👇\
 	*First, fill in the input parameters of your problem setting. Then, click outside the text field to update the report.*
 
-🔹 **№ modules in design space** (`n`):                     $(@bind n_string TextField(default = "100")) \
-	    
-                                                 =   *How many different modules or building                                                  blocks are available to construct designs?*
- """
-	
+🔹 **№ modules in design space** (`n`):                     $(@bind n_string TextField(default = "100"))                                                           =   *How many different modules or building                                                  blocks are available to construct designs?*"""
 end
 
 # ╔═╡ 123d5b94-5772-42dc-bf74-d964d023b209
