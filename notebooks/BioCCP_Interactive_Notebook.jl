@@ -172,8 +172,8 @@ end
 begin
 	if ps == "Unequal"	
 		md"""
-- *If the exact module probabilities are known, choose "Custom vector".* 
-- *Otherwise, select:*
+    *If the exact module probabilities are known, choose "Custom vector".* 
+ *Otherwise, select:*
   - *"Zipf's law" (when you expect a small number of modules occur quite often, and a very large number of modules occur at the statistical equivalent of zero, but, they do occur.)* 
   - *"Bell curve" (when you expect a large number of modules to occur at an average probability and a smaller number of modules to occur with a small or large probability)* """
 	end
@@ -190,18 +190,33 @@ end
 # ╔═╡ 2639e3fb-ccbb-44de-bd15-1c5dbf6c1539
 begin
 	if distribution == "Custom vector"
-				md"""             	       ↳  Enter/load your custom abundances by changing the cell below 👇"""			
+				md"""        **↳  Enter/load your custom abundances by changing the cell below 👇**"""			
 		end
 end
 
-# ╔═╡ 44d4dfee-3073-49aa-867c-3abea10e6e37
+# ╔═╡ 464b67be-2dad-4315-a144-0b475414366f
+if distribution == "Custom vector"
+	
+	md"""                                            $(@bind abundances_str TextField((30, 10), 	default=join(string.(rand(200:1:400, n)), "\n")))
+	                                           *Make sure the number of abundances is equal to n!*"""
+end
+
+
+# ╔═╡ 1220c75b-303c-4b0a-84c4-a12ee834a5af
 begin
-	# To load your custom probability vector from an excell sheet,
-	# see for example XLSX package
-	# Below, an example of a custom abundance vector is defined using rand
-	if distribution == "Custom vector"
-		abundances = rand(200:1:400, n)
+	function tonumbers(text) 
+		text = split(text, "\n")
+		text = rstrip.(text)
+		text = text[text .!= ""]
+		text = parse.(Float64,text)
+		return text
 	end
+	
+	if distribution == "Custom vector"
+		abundances = (tonumbers(abundances_str))
+	end
+	
+	md""
 end
 
 # ╔═╡ f6ebf9fb-0a29-4cb4-a544-6c6e32bedcc4
@@ -571,7 +586,8 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─57e017dc-3ecf-4380-a48d-333851f8db9c
 # ╟─b17f3b8a-61ee-4563-97cd-19ff049a8e1e
 # ╟─2639e3fb-ccbb-44de-bd15-1c5dbf6c1539
-# ╟─44d4dfee-3073-49aa-867c-3abea10e6e37
+# ╟─464b67be-2dad-4315-a144-0b475414366f
+# ╟─1220c75b-303c-4b0a-84c4-a12ee834a5af
 # ╟─f6ebf9fb-0a29-4cb4-a544-6c6e32bedcc4
 # ╟─87c3f5cd-79bf-4ad8-b7f8-3e98ec548a9f
 # ╟─2313198e-3ac9-407b-b0d6-b79e02cefe35
