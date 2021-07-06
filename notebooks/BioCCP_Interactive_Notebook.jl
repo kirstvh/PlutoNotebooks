@@ -399,10 +399,14 @@ md""" **💻 Success probability**               �
 *The probability that the minimum number of designs T is smaller than or equal to a given sample size t.* """
 
 # ╔═╡ db4371e4-7f86-4db3-b076-12f6cd220b89
-begin
-	
+begin	
 	if show_success == "🔻 SHOW " 
-		md"""    👉 Enter your sample size of interest: $(@bind sample_size_1_string TextField(default="500"))""" 
+		sample_size_95 = 1
+		while 0.95 - success_probability(n, sample_size_95;	p_vec = p_vec, 
+				r = r, m = m) > 0.00005
+			global sample_size_95 += Int(ceil(n/10))
+		end
+		md"""    👉 Enter your sample size of interest: $(@bind sample_size_1_string TextField(default=string(sample_size_95)))""" 
 		
 	end
 	#genereer tabel + download knop
