@@ -465,7 +465,9 @@ plot(sample_sizes, successes, title = "Success probability in function of sample
 end
 
 # ╔═╡ 4902d817-3967-45cd-a283-b2872cf1b49c
-DownloadButton(string("sample_size,", tocsv(sample_sizes), "\n", "success_probability,", tocsv(successes)), "successprobability_$date.csv")
+if show_success == "🔻 SHOW " 
+	DownloadButton(string("sample_size,", tocsv(sample_sizes), "\n", "success_probability,", tocsv(successes)), "successprobability_$date.csv")
+end
 
 # ╔═╡ 37f951ee-885c-4bbe-a05f-7c5e48ff4b6b
 begin
@@ -558,7 +560,9 @@ end
 end
 
 # ╔═╡ 0b95ccff-4c7b-400d-be61-8ea056ccc87f
-DownloadButton(string("sample_size,", tocsv(sample_sizes_frac), "\n", "expected_observed_fraction,", tocsv(fracs)), "expectedobservedfraction_$date.csv")
+if show_satur == "🔻 SHOW " 
+	DownloadButton(string("sample_size,", tocsv(sample_sizes_frac), "\n", "expected_observed_fraction,", tocsv(fracs)), "expectedobservedfraction_$date.csv")
+end
 
 # ╔═╡ 09fb9f1d-16e4-447c-a5c0-d153cec22665
 
@@ -597,7 +601,7 @@ if show_occ == "🔻 SHOW "
 	if distribution != "Zipf's law"
 		p = parse(Float64, p_string)
 		ed = Int(floor(sample_size_3*p))
-		j = 0:1:minimum([20, 4*ed])
+		j = collect(0:1:minimum([20, 4*ed]))
 		x  = prob_occurrence_module.(p, sample_size_3, j)
 			
 		plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
@@ -610,7 +614,7 @@ if show_occ == "🔻 SHOW "
 		rank = parse(Int64, rank_string)
 		p = p_vec[rank]	
 		ed = Int(floor(sample_size_3*p))
-		j = 0:1:minimum([20, 4*ed])
+		j = collect(0:1:minimum([20, 4*ed]))
 		x  = prob_occurrence_module.(p, sample_size_3, j)
 			
 		plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
@@ -635,7 +639,9 @@ begin
 end
 
 # ╔═╡ a2bf1368-20a9-42cd-af58-67397644d725
-DownloadButton(string("number_of_occurence,", tocsv(sample_sizes_frac), "\n", "probability,", tocsv(fracs)), "occurrencemodule_$date.csv")
+if show_occ == "🔻 SHOW " 
+	DownloadButton(string("number_of_occurence,", tocsv(j), "\n", "probability,", tocsv(x)), "occurrencemodule_$date.csv")
+end
 
 # ╔═╡ fbffaab6-3154-49df-a226-d5810d0b7c38
 md"""## References"""
