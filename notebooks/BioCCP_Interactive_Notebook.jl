@@ -90,6 +90,9 @@ end
 md"  "
 end
 
+# ╔═╡ 20ce43cd-7634-4c94-afdf-d243415525cb
+md"                                                             $(@bind date DateField())"
+
 # ╔═╡ 4d246460-af05-11eb-382b-590e60ba61f5
 md"## Collecting Coupons in combinatorial biotechnology
 
@@ -97,71 +100,136 @@ This notebook provides functions and corresponding visualizations to determine e
 
 "
 
+# ╔═╡ 6183795b-62a0-4ed4-b8f9-ea522da956e2
+begin
+	begin
+		function tocsv(raw)
+		t = string(raw)
+		t = split(t, "[")[2]
+		t = split(t, "]")[1]
+		return t
+		end
+	end
+	md""
+end
+
 # ╔═╡ a8c81622-194a-443a-891b-bfbabffccff1
 begin
 	
 md""" 
  
 👇 **COMPLETE THE FIELDS BELOW** 👇\
-	*First, fill in the input parameters of your problem setting. Then, click outside the text field to update the report.*
+	*First, fill in the input parameters of your problem setting. Then, click outside the text field to update the report.*"""
+end
 
-🔹 **№ modules in design space** (`n`):                       $(@bind n_string TextField(default = "100"))
-	                                                          =   *How many different modules or building                                                    blocks are available to construct designs?*"""
+# ╔═╡ 033a0b65-94e0-4a0d-ae8c-3902725a7330
+Show(MIME"image/png"(), read("BioCCP_img.png"))
+
+# ╔═╡ 36a09fff-8b14-4d91-84e0-9ecabefa810a
+
+
+# ╔═╡ 40ac5be1-6fc2-4fbc-b0ca-a021266b2247
+begin
+	vec_n = [];
+	md"""🔹 **№ modules in design space** (`n`):                       $(@bind n_string TextField(default = "100")) $(@bind help_n Button("❓"))"""
+end
+
+# ╔═╡ 7b05669c-7abe-42a7-838c-61c06b261256
+begin
+	help_n
+	switch_n = rem(length(vec_n), 2)
+	push!(vec_n, 1)
+	if switch_n == 1
+		md"""
+	                                                       =   *How many different modules or building                                                    blocks are available to construct designs?*"""
+	end
 end
 
 # ╔═╡ 123d5b94-5772-42dc-bf74-d964d023b209
 begin
-md""" 
- 
- 
+	vec_r = []
+md""" 	
+🔹 **Expected № modules per design** (`r`):                      $(@bind r NumberField(1:20)) $(@bind help_r Button("❓")) """
 	
-🔹 **Expected № modules per design** (`r`):                      $(@bind r NumberField(1:20))\
+end
+
+# ╔═╡ 30cb2ab3-ad67-405e-95a1-8feea223938a
+begin
+	help_r
+	switch_r = rem(length(vec_r), 2)
+	push!(vec_r, 1)
+	if switch_r == 1
+		md"""
 	
-                                                 =    *How many modules are combined in                                                   a single design, on average?*
- """
-	
+                                                 =    *How many modules are combined in                                                   a single design, on average?*"""
+	end
 end
 
 # ╔═╡ c8164a38-fcf9-4f1b-b697-46c8ce978fce
 begin
+	vec_m = []
 md""" 
- 
-**🔹 № times you want to observe each module** (`m`):              $(@bind m NumberField(1:20))\
-	                                                    = 	   *How many times do you want to                                                     observe each of the available modules in                                                               the total set of designs?*
- """
+**🔹 № times you want to observe each module** (`m`):              $(@bind m NumberField(1:20)) $(@bind help_m Button("❓")) """
 	
+end
+
+# ╔═╡ a5c3153f-0946-4af8-871c-634a71e8b7f1
+begin
+	help_m
+	switch_m = rem(length(vec_m), 2)
+	push!(vec_m, 1)
+	if switch_m == 1
+		md"""
+	                                                    = 	   *How many times do you want to                                                     observe each of the available modules in                                                               the total set of designs?*"""
+	end
 end
 
 # ╔═╡ d6c6be55-fc94-480a-bc58-ca67b0c44568
 begin
-md""" 
-🔹 **Abundances of modules during library generation** (`p`):     $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))                            
+	vec_p = []
+md"""🔹 **Abundances of modules during library generation** (`p`):     $(@bind ps Select(["Equal", "Unequal"], default = "Equal"))  $(@bind help_p Button("❓"))"""                    
+	
+end
+
+# ╔═╡ b88fab57-9f78-4450-90af-62ab860620a0
+begin
+	help_p
+	switch_p = rem(length(vec_p), 2)
+	push!(vec_p, 1)
+	if switch_p == 1
+		md"""                           
                 
 			      =    *How are the abundances of the                                                                 modules distributed during combinatorial                                                              generation of designs?
-	Is each module                                                                    equally likely to be included in a design?*"""                    
-	
+	Is each module                                                                    equally likely to be included in a design?*"""
+	end
 end
 
 # ╔═╡ 45507d48-d75d-41c9-a018-299e209f900e
 begin
+	vec_p_unequal = []
 	n = parse(Int64, n_string);
 	if ps == "Equal"
 		distribution = "Equal"
 	end
 		if ps == "Unequal"	
 	md""" ↳     **Specify distribution**:                                                                           
-	      $(@bind distribution Select(["Bell curve", "Zipf's law", "Custom vector"], default = " "))"""
+	      $(@bind distribution Select(["Bell curve", "Zipf's law", "Custom vector"], default = " ")) $(@bind help_p_unequal Button("❓"))"""
 		end	
 end
 
-# ╔═╡ 57e017dc-3ecf-4380-a48d-333851f8db9c
+# ╔═╡ a937e514-4c4a-4f76-b8e5-3c2031afd416
 begin
-	if ps == "Unequal"	
+	help_p_unequal
+	if ps == "Unequal"
+	switch_p_unequal = rem(length(vec_p_unequal), 2)
+	push!(vec_p_unequal, 1)
+	if switch_p_unequal == 1
 		md"""
     *If the exact module probabilities are known, choose "Custom vector".* 
  *Otherwise, select:*
   - *"Zipf's law" (when you expect a small number of modules occur quite often, and a very large number of modules occur at the statistical equivalent of zero, but, they do occur.)* 
   - *"Bell curve" (when you expect a large number of modules to occur at an average probability and a smaller number of modules to occur with a small or large probability)* """
+	end
 	end
 end
 
@@ -213,6 +281,14 @@ md"""
 **💻 Module probabilities**                                                                                                                       $(@bind show_modprobs Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE ") )  \
 *How the abundances of the modules are distributed during combinatorial library generation.*
 """
+
+# ╔═╡ 2313198e-3ac9-407b-b0d6-b79e02cefe35
+begin
+	vec_p_normal = []
+	if show_modprobs == "🔻 SHOW "  && distribution == "Bell curve"
+md"""For $n_string modules of which the probabilities form a bell curve with ratio pₘₐₓ/pₘᵢₙ = $pmaxpmin_string , we follow the percentiles of a normal distribution to generate the probability vector ( $(@bind help_p_normal Button("❓")) )."""
+	end	
+end
 
 # ╔═╡ b0291e05-776e-49ce-919f-4ad7de4070af
 begin
@@ -277,12 +353,14 @@ begin
 	end	
 end
 
-# ╔═╡ 2313198e-3ac9-407b-b0d6-b79e02cefe35
+# ╔═╡ 5e18f113-2d14-41a3-ba5f-dc84e571a64e
 begin
+	help_p_normal
 	if show_modprobs == "🔻 SHOW "  && distribution == "Bell curve"
-md"""For $n_string modules of which the probabilities form a bell curve with ratio pₘₐₓ/pₘᵢₙ = $pmaxpmin_string , we follow the percentiles of a normal distribution to generate the probability vector.
-
-We consider μ to be the mean module probability and σ to be the standard deviation of the module probabilities.
+	switch_p_normal = rem(length(vec_p_normal), 2)
+	push!(vec_p_normal, 1)
+	if switch_p_normal == 1
+		md"""We consider μ to be the mean module probability and σ to be the standard deviation of the module probabilities.
 		
 According to the percentiles
 - 68% of the module probabilities lies in the interval [μ - σ, μ + σ], 
@@ -297,7 +375,8 @@ As a result, we get:
 -  $(n_perc_2)  modules with a probability of $((μ-1.5*σ)/sum(p_vec_unnorm))
 -  $(n_perc_3)  modules with a probability of $((μ+2.5*σ)/sum(p_vec_unnorm))
 -  $(n_perc_3)  modules with a probability of $((μ-2.5*σ)/sum(p_vec_unnorm))"""
-	end	
+	end
+	end
 end
 
 # ╔═╡ f098570d-799b-47e2-b692-476a4d95825b
@@ -338,6 +417,7 @@ md""" **💻 Success probability**               �
 
 # ╔═╡ db4371e4-7f86-4db3-b076-12f6cd220b89
 begin
+	
 	if show_success == "🔻 SHOW " 
 		md"""    👉 Enter your sample size of interest: $(@bind sample_size_1_string TextField(default="500"))""" 
 		
@@ -385,7 +465,7 @@ plot(sample_sizes, successes, title = "Success probability in function of sample
 end
 
 # ╔═╡ 4902d817-3967-45cd-a283-b2872cf1b49c
-
+DownloadButton(string("sample_size,", tocsv(sample_sizes), "\n", "success_probability,", tocsv(successes)), "successprobability_$date.csv")
 
 # ╔═╡ 37f951ee-885c-4bbe-a05f-7c5e48ff4b6b
 begin
@@ -467,7 +547,7 @@ global sample_size_initial_frac = 5
 		global	 sample_size_initial_frac += n/10
 		end
 	
-	sample_sizes_frac = 0 : n/10 : sample_size_initial_frac
+	sample_sizes_frac = collect(0 : n/10 : sample_size_initial_frac)
 	
 	fracs = expectation_fraction_collected.(n, sample_sizes_frac; p_vec = p_vec, r = r)
 	
@@ -478,6 +558,9 @@ end
 end
 
 # ╔═╡ 0b95ccff-4c7b-400d-be61-8ea056ccc87f
+DownloadButton(string("sample_size,", tocsv(sample_sizes_frac), "\n", "expected_observed_fraction,", tocsv(fracs)), "expectedobservedfraction_$date.csv")
+
+# ╔═╡ 09fb9f1d-16e4-447c-a5c0-d153cec22665
 
 
 # ╔═╡ f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
@@ -487,52 +570,57 @@ md""" **💻 Occurrence of a specific module**           �
 # ╔═╡ ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
 if show_occ == "🔻 SHOW " && distribution != "Zipf's law"
 	md"""    👉 Enter the probability of the module of interest: $(@bind p_string TextField(default="0.005"))\
-	    👉 Enter the sample size of interest:                $(@bind sample_size_3_string TextField(default="500"))
 	""" 	
 	
 end
-
-# ipv probabiliteit --> rank i: sorteer modules
 
 # ╔═╡ 0e39a993-bb2f-4897-bfe2-5128ec62bef9
 if show_occ == "🔻 SHOW " && distribution == "Zipf's law"
 	md"""    👉 Enter the rank of the module of interest:        $(@bind rank_string TextField(default="5"))\
-	    👉 Enter the sample size of interest:                $(@bind sample_size_4_string TextField(default="500"))
-	""" 	
-	
+	""" 		
+end 
+
+# ╔═╡ f3329934-d69b-48a0-9cf1-e9a5920cf414
+if show_occ == "🔻 SHOW "
+	 md"""   👉 Enter the sample size of interest:                $(@bind sample_size_3_string TextField(default="500"))"""
 end
 
-# ipv probabiliteit --> rank i: sorteer modules
+# ╔═╡ a041652b-365e-4594-9c48-c63d547b3295
+
 
 # ╔═╡ 6acb0a97-6469-499f-a5cf-6335d6aa909a
 begin
 	
 if show_occ == "🔻 SHOW " 
+	sample_size_3 = parse(Int64, sample_size_3_string)
+
 	if distribution != "Zipf's law"
 		p = parse(Float64, p_string)
-		sample_size_3 = parse(Int64, sample_size_3_string)
 		ed = Int(floor(sample_size_3*p))
-		j = 0:1:minimum([20, 4*ed])	
+		j = 0:1:minimum([20, 4*ed])
 		x  = prob_occurrence_module.(p, sample_size_3, j)
-	 	plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
-				ylabel="probability p", 
-				title="Probability on № of occurrences for specific module", 
-				label="", size=((600,300)), 
-				titlefont=font(10), xguidefont=font(9), yguidefont=font(9))
-	
-		else
-			rank = parse(Int64, rank_string)
-			p = p_vec[rank]
-			sample_size_4 = parse(Int64, sample_size_4_string)
-			ed = Int(floor(sample_size_4*p))
-			j = 0:1:minimum([20, 4*ed])	
-		x  = prob_occurrence_module.(p, sample_size_4, j)
-	 	plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
+			
+		plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
 				ylabel="probability p", 
 				title="Probability on № of occurrences for specific module", 
 				size=((600,300)), label="",titlefont=font(10), 
-				xguidefont=font(9), yguidefont=font(9))			
-		end
+				xguidefont=font(9), yguidefont=font(9))
+	
+	else
+		rank = parse(Int64, rank_string)
+		p = p_vec[rank]	
+		ed = Int(floor(sample_size_3*p))
+		j = 0:1:minimum([20, 4*ed])
+		x  = prob_occurrence_module.(p, sample_size_3, j)
+			
+		plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
+				ylabel="probability p", 
+				title="Probability on № of occurrences for specific module", 
+				size=((600,300)), label="",titlefont=font(10), 
+				xguidefont=font(9), yguidefont=font(9))
+	 			
+	end
+		
 	end
 end
 
@@ -545,6 +633,9 @@ begin
 		"""
 	end
 end
+
+# ╔═╡ a2bf1368-20a9-42cd-af58-67397644d725
+DownloadButton(string("number_of_occurence,", tocsv(sample_sizes_frac), "\n", "probability,", tocsv(fracs)), "occurrencemodule_$date.csv")
 
 # ╔═╡ fbffaab6-3154-49df-a226-d5810d0b7c38
 md"""## References"""
@@ -560,14 +651,23 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 
 
 # ╔═╡ Cell order:
+# ╟─20ce43cd-7634-4c94-afdf-d243415525cb
 # ╟─4d246460-af05-11eb-382b-590e60ba61f5
 # ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
+# ╟─6183795b-62a0-4ed4-b8f9-ea522da956e2
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
+# ╟─033a0b65-94e0-4a0d-ae8c-3902725a7330
+# ╟─36a09fff-8b14-4d91-84e0-9ecabefa810a
+# ╟─40ac5be1-6fc2-4fbc-b0ca-a021266b2247
+# ╟─7b05669c-7abe-42a7-838c-61c06b261256
 # ╟─123d5b94-5772-42dc-bf74-d964d023b209
+# ╟─30cb2ab3-ad67-405e-95a1-8feea223938a
 # ╟─c8164a38-fcf9-4f1b-b697-46c8ce978fce
+# ╟─a5c3153f-0946-4af8-871c-634a71e8b7f1
 # ╟─d6c6be55-fc94-480a-bc58-ca67b0c44568
+# ╟─b88fab57-9f78-4450-90af-62ab860620a0
 # ╟─45507d48-d75d-41c9-a018-299e209f900e
-# ╟─57e017dc-3ecf-4380-a48d-333851f8db9c
+# ╟─a937e514-4c4a-4f76-b8e5-3c2031afd416
 # ╟─b17f3b8a-61ee-4563-97cd-19ff049a8e1e
 # ╟─2639e3fb-ccbb-44de-bd15-1c5dbf6c1539
 # ╟─464b67be-2dad-4315-a144-0b475414366f
@@ -575,6 +675,7 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─f6ebf9fb-0a29-4cb4-a544-6c6e32bedcc4
 # ╟─87c3f5cd-79bf-4ad8-b7f8-3e98ec548a9f
 # ╟─2313198e-3ac9-407b-b0d6-b79e02cefe35
+# ╟─5e18f113-2d14-41a3-ba5f-dc84e571a64e
 # ╟─b0291e05-776e-49ce-919f-4ad7de4070af
 # ╟─f098570d-799b-47e2-b692-476a4d95825b
 # ╟─85c0bd2f-e6a6-4feb-8bd1-f8bb058e10e0
@@ -598,10 +699,14 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─0099145a-5460-4549-9513-054bc1b04eea
 # ╟─7968de5e-5ae8-4ab4-b089-c3d33475af2f
 # ╟─0b95ccff-4c7b-400d-be61-8ea056ccc87f
+# ╟─09fb9f1d-16e4-447c-a5c0-d153cec22665
 # ╟─f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
 # ╟─ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
 # ╟─0e39a993-bb2f-4897-bfe2-5128ec62bef9
+# ╟─f3329934-d69b-48a0-9cf1-e9a5920cf414
+# ╟─a041652b-365e-4594-9c48-c63d547b3295
 # ╟─6acb0a97-6469-499f-a5cf-6335d6aa909a
 # ╟─595423df-728b-43b1-ade4-176785c54be3
+# ╟─a2bf1368-20a9-42cd-af58-67397644d725
 # ╟─fbffaab6-3154-49df-a226-d5810d0b7c38
 # ╟─1f48143a-2152-4bb9-a765-a25e70c281a3
