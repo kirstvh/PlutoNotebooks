@@ -223,7 +223,7 @@ if ps == "Unequal"
 md"""
     *If the exact module probabilities are known, choose "Custom vector".* 
  *Otherwise, select:*
-  - *"Zipf's law" (when you expect a small number of modules occur quite often, and a very large number of modules occur at the statistical equivalent of zero, but, they do occur.)* 
+  - *"Zipf's law" (when you expect a small number of modules to occur quite often, and a very large number of modules to occur at the statistical equivalent of zero, but, they do occur.)* 
   - *"Bell curve" (when you expect a large number of modules to occur at an average probability and a smaller number of modules to occur with a small or large probability)* """
 end
 
