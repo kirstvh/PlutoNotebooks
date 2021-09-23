@@ -123,7 +123,7 @@ md"""
 end
 
 # ╔═╡ 033a0b65-94e0-4a0d-ae8c-3902725a7330
-Show(MIME"image/png"(), read("BioCCP_img.png"))
+Show(MIME"image/png"(), read("BioCCP_scheme.png"))
 
 # ╔═╡ 36a09fff-8b14-4d91-84e0-9ecabefa810a
 
