@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.8
+# v0.16.0
 
 using Markdown
 using InteractiveUtils
@@ -13,82 +13,11 @@ macro bind(def, element)
     end
 end
 
+# ╔═╡ 85da7ce3-ab68-4a5f-89af-47692b736d42
+import Pkg; Pkg.add(url="https://github.com/kirstvh/BioCCP.jl")
+
 # ╔═╡ e1a7f2da-a38b-4b3c-a238-076769e46408
-begin	
-using Plots, PlutoUI
-function exp_ccdf(n, t; p_vec = ones(n), m = 1, r = 1, normalize = true)   
-    @assert length(p_vec) == n
-	    
-    # Normalize probabilities
-    if normalize
-        p_vec = p_vec ./ sum(p_vec)    
-    end   
-    # Initialize probability P
-    P_cdf = 1
-    for i in 1:n
-          Sm = 0
-        for j in 1:m
-            Sm += ((p_vec[i]*r*t)^(j-1))/factorial(j-1) 
-				#formulas see paper References [1]
-        end 
-        P_cdf *= (1 - Sm*exp(-p_vec[i]*r*t))        
-    end   
-    P = 1 - P_cdf
-    return P
-end 
-	
-function approximate_moment(n, fun; p_vec = ones(n), q=1, m = 1, r = 1,
-	        steps = 10000, normalize = true)
-    @assert length(p_vec) == n
-    a = 0; b = 0
-	ϵ = 0.00001
-    while fun(n, b; p_vec = p_vec, m = m, r=r, normalize=normalize) > ϵ
-        b += n
-			if fun(n, b; p_vec = p_vec, m = m, r=r, normalize=normalize) > 1-ϵ
-				a = deepcopy(b)
-			end
-    end
-    δ = (b-a)/steps; t = a:δ:b
-    qth_moment = q * (sum(δ .* fun.(n, t; p_vec = p_vec, m = m, r=r, normalize = normalize) .* t.^(q-1)) ) + (a^(q)) #integration exp_ccdf, see paper References [1]
-    return qth_moment           
-end
-	
-
-	
-	
-function expectation_minsamplesize(n; p_vec = ones(n), m = 1, r = 1, normalize = true)
-    @assert length(p_vec) == n
-    E = approximate_moment(n, exp_ccdf; p_vec = p_vec, q = 1, m = m, r = r, normalize = normalize)
-    return ceil(E)
-end
-
-function std_minsamplesize(n; p_vec = ones(n), m = 1, r = 1, normalize = true)
-    @assert length(p_vec) == n
-    M1 = approximate_moment(n, exp_ccdf; p_vec = p_vec, q=1, m = m, r = r,  normalize = normalize)
-    M2 = approximate_moment(n, exp_ccdf; p_vec = p_vec, q=2, m = m, r = r, normalize = normalize)
-    var = M2 - M1 - M1^2
-    return ceil(sqrt(var))
-end
-	
-function success_probability(n, t; p_vec = ones(n), m = 1, r = 1, normalize = true)   
-    P_success = 1 - exp_ccdf(n, t; p_vec = p_vec, m = m, r = r, normalize = normalize) 
-    return P_success
-end
-	
-function expectation_fraction_collected(n, t; p_vec = ones(n), r = 1, normalize=true)
-    if normalize
-        p_vec = p_vec./sum(p_vec)
-    end
-    frac = sum( (1-(1-p_vec[i])^(t*r)) for i in 1:n )/n
-    return frac
-end
-	
-function prob_occurrence_module(p, t, j)
-	return (exp(-1*(p*t))*(p*t)^j)/factorial(j) 
-end
-	
-md"  "
-end
+using Plots, PlutoUI, BioCCP
 
 # ╔═╡ 20ce43cd-7634-4c94-afdf-d243415525cb
 md"                                                             $(@bind date DateField())"
@@ -321,7 +250,7 @@ begin
 	
 	if show_modprobs == "🔻 SHOW "   
 	
-	scatter(p_vec, title = "Probability mass function", ylabel = "module probability pⱼ", xlabel = "module j", label="", size = (700, 400))
+	scatter(p_vec, title = "Probability mass function", ylabel = "module probability pj", xlabel = "module j", label="", size = (700, 400))
 	ylims!((0,2*maximum(p_vec)), titlefont=font(10), xguidefont=font(9), yguidefont=font(9))
 
 	end	
@@ -367,7 +296,7 @@ if show_modprobs == "🔻 SHOW "
 md"Each biological design in the design space is built by choosing $r module(s) (with replacement) out of a set of $n_string modules according to the module probabilities visualized above."
 end
 
-# ╔═╡ 85c0bd2f-e6a6-4feb-8bd1-f8bb058e10e0
+# ╔═╡ 85bfc3d5-447d-4078-af14-e3f369adfa71
 
 
 # ╔═╡ caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
@@ -378,8 +307,8 @@ md""" **💻 Expected minimum sample size**            �
 # ╔═╡ 6f14a72c-51d3-4759-bb8b-10db1dc260f0
 begin
 	if show_E == "🔻 SHOW "   
-		E = Int(ceil(expectation_minsamplesize(n; p_vec = p_vec, m=m, r = r)))
-		sd = Int(ceil(std_minsamplesize(n; p_vec = p_vec, m=m, r = r)))
+		E = Int(ceil(expectation_minsamplesize(n; p = p_vec, m=m, r = r)))
+		sd = Int(ceil(std_minsamplesize(n; p = p_vec, m=m, r = r)))
 		
 			md""" 
      `Expected minimum sample size    `     = **$E designs**\
@@ -398,11 +327,30 @@ md""" **💻 Success probability**               �
 
 *The probability that the minimum number of designs T is smaller than or equal to a given sample size t.* """
 
+# ╔═╡ 24f7aae7-d37a-4db5-ace0-c910b178da88
+begin
+	using LaTeXStrings
+if show_success == "🔻 SHOW " 
+	
+sample_size_initial = 5
+	while (1 - success_probability(n, sample_size_initial; p = p_vec, r = r, m = m)) > 0.0005
+		global sample_size_initial += Int(ceil(n/10))
+	end
+		
+	sample_sizes = Int.(ceil.(0:n/10:sample_size_initial))
+	successes = success_probability.(n, sample_sizes; p = p_vec, r = r, m = m)
+plot(sample_sizes, successes, title = "Success probability in function of sample size", 
+			xlabel = "sample size s", 
+			ylabel="P(minimum sample size Smin <= s)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter, titlefont=font(10),xguidefont=font(9), yguidefont=font(9))
+		end
+	 
+end
+
 # ╔═╡ db4371e4-7f86-4db3-b076-12f6cd220b89
 begin	
 	if show_success == "🔻 SHOW " 
 		sample_size_95 = 1
-		while 0.95 - success_probability(n, sample_size_95;	p_vec = p_vec, 
+		while 0.95 - success_probability(n, sample_size_95;	p = p_vec, 
 				r = r, m = m) > 0.00005
 			global sample_size_95 += Int(ceil(n/10))
 		end
@@ -416,7 +364,7 @@ end
 begin
 	if show_success == "🔻 SHOW " 
 	sample_size_1 = parse(Int64, sample_size_1_string);
-	p_success = success_probability(n, sample_size_1; p_vec = p_vec, m = m, r = r)
+	p_success = success_probability(n, sample_size_1; p = p_vec, m = m, r = r)
 	
 	md""" 
               ↳ `Success probability F(t)`  = **$p_success**\
@@ -434,22 +382,6 @@ end
 
 # ╔═╡ 9616af0e-810c-4e6a-bc67-cb70e5e620f5
 
-
-# ╔═╡ 24f7aae7-d37a-4db5-ace0-c910b178da88
-begin
-if show_success == "🔻 SHOW " 
-	
-sample_size_initial = 5
-	while (1 - success_probability(n, sample_size_initial; p_vec = p_vec, r = r, m = m)) > 0.0005
-		global sample_size_initial += n/10
-	end
-		
-	sample_sizes = ceil.(0:n/10:sample_size_initial)
-	successes = success_probability.(n, ceil.(sample_sizes); p_vec = p_vec, r = r, m = m)
-plot(sample_sizes, successes, title = "Success probability in function of sample size", xlabel = "sample size s", ylabel= "P(s ≤ Sₘᵢₙ)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter, titlefont=font(10),xguidefont=font(9), yguidefont=font(9))
-		end
-	 
-end
 
 # ╔═╡ 4902d817-3967-45cd-a283-b2872cf1b49c
 if show_success == "🔻 SHOW " 
@@ -512,8 +444,8 @@ end
 # ╔═╡ f0eaf96b-0bc0-4194-9a36-886cb1d66e00
 begin
 	if show_satur == "🔻 SHOW " 
-	sample_size_2 = parse(Int64, sample_size_2_string)
-	E_fraction = expectation_fraction_collected(n, sample_size_2; p_vec = p_vec, r = r)
+	sample_size_2 = Int(ceil(parse(Int64, sample_size_2_string)))
+	E_fraction = expectation_fraction_collected(n, sample_size_2; p = p_vec, r = r)
 	
 	md""" 	            ↳ `Expected fraction observed`	= **$E_fraction**
 	"""	
@@ -532,13 +464,13 @@ md""" *A curve describing the expected fraction of modules observed in function 
 begin
 	if show_satur == "🔻 SHOW " 
 global sample_size_initial_frac = 5
-		while (1 - expectation_fraction_collected(n, sample_size_initial_frac; p_vec = p_vec, r = r)) > 0.0005
-		global	 sample_size_initial_frac += n/10
+		while (1 - expectation_fraction_collected(n, sample_size_initial_frac; p = p_vec, r = r)) > 0.0005
+		global	 sample_size_initial_frac += ceil(Int(n/10))
 		end
 	
-	sample_sizes_frac = collect(0 : n/10 : sample_size_initial_frac)
+	sample_sizes_frac = Int.(ceil.(collect(0 : n/10 : sample_size_initial_frac)))
 	
-	fracs = expectation_fraction_collected.(n, sample_sizes_frac; p_vec = p_vec, r = r)
+	fracs = expectation_fraction_collected.(n, sample_sizes_frac; p = p_vec, r = r)
 	
 	plot(sample_sizes_frac, fracs, title = "Expected observed fraction of the total number of modules", 
 	    xlabel = "sample size", seriestype=:scatter, 
@@ -586,27 +518,27 @@ if show_occ == "🔻 SHOW "
 	sample_size_3 = parse(Int64, sample_size_3_string)
 
 	if distribution != "Zipf's law"
-		p = parse(Float64, p_string)
-		ed = Int(floor(sample_size_3*p))
+		pᵢ = parse(Float64, p_string)
+		ed = Int(floor(sample_size_3*pᵢ))
 		j = collect(0:1:minimum([20, 4*ed]))
-		x  = prob_occurrence_module.(p, sample_size_3, j)
+		x  = prob_occurrence_module.(pᵢ, sample_size_3, j)
 			
-		plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
-				ylabel="probability p", 
-				title="Probability on № of occurrences for specific module", 
+		plot(j,x, seriestype=[:scatter, :line], xlabel="occurrences in sample",
+				ylabel="probability", 
+				title="Probability on number of occurrences for specific module", 
 				size=((600,300)), label="",titlefont=font(10), 
 				xguidefont=font(9), yguidefont=font(9))
 	
 	else
 		rank = parse(Int64, rank_string)
-		p = p_vec[rank]	
-		ed = Int(floor(sample_size_3*p))
+		pᵢ = p_vec[rank]	
+		ed = Int(floor(sample_size_3*pᵢ))
 		j = collect(0:1:minimum([20, 4*ed]))
-		x  = prob_occurrence_module.(p, sample_size_3, j)
+		x  = prob_occurrence_module.(pᵢ, sample_size_3, j)
 			
-		plot(j,x, seriestype=[:scatter, :line], xlabel="№ occurrences in sample",
-				ylabel="probability p", 
-				title="Probability on № of occurrences for specific module", 
+		plot(j,x, seriestype=[:scatter, :line], xlabel="occurrences in sample",
+				ylabel="probabilityS", 
+				title="Probability on number of occurrences for specific module", 
 				size=((600,300)), label="",titlefont=font(10), 
 				xguidefont=font(9), yguidefont=font(9))
 	 			
@@ -646,7 +578,8 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╔═╡ Cell order:
 # ╟─20ce43cd-7634-4c94-afdf-d243415525cb
 # ╟─4d246460-af05-11eb-382b-590e60ba61f5
-# ╟─e1a7f2da-a38b-4b3c-a238-076769e46408
+# ╠═85da7ce3-ab68-4a5f-89af-47692b736d42
+# ╠═e1a7f2da-a38b-4b3c-a238-076769e46408
 # ╟─6183795b-62a0-4ed4-b8f9-ea522da956e2
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
 # ╟─033a0b65-94e0-4a0d-ae8c-3902725a7330
@@ -670,7 +603,7 @@ md"""[^1]:  Doumas, A. V., & Papanicolaou, V. G. (2016). *The coupon collector�
 # ╟─2313198e-3ac9-407b-b0d6-b79e02cefe35
 # ╟─b0291e05-776e-49ce-919f-4ad7de4070af
 # ╟─f098570d-799b-47e2-b692-476a4d95825b
-# ╟─85c0bd2f-e6a6-4feb-8bd1-f8bb058e10e0
+# ╟─85bfc3d5-447d-4078-af14-e3f369adfa71
 # ╟─caf67b2f-cc2f-4d0d-b619-6e1969fabc1a
 # ╟─6f14a72c-51d3-4759-bb8b-10db1dc260f0
 # ╟─f1e180e5-82a7-4fab-b894-75be4627af5d
