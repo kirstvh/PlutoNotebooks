@@ -82,7 +82,7 @@ end
 md"## Case study
 
 
-In this notebook, the BioCCP.jl package will be applied onto a real biological problem. More specifically, we will illustrate how it can aid in determining an appropriate sample size for a CRISPR-Cas 9 guide RNA library. As a case study, we consider the paper 'Genome-wide CRISPR Screen in a Mouse Model of Tumor Growth and Metastasis' (Chen *et al*, 2015) [^1]. 
+In this notebook, the BioCCP.jl package will be applied onto a real biological problem. More specifically, we will illustrate how it can aid in determining an appropriate sample size in order to guarantee sufficient coverage of a CRISPR-Cas 9 guide RNA library. As a case study, we consider the paper 'Genome-wide CRISPR Screen in a Mouse Model of Tumor Growth and Metastasis' (Chen *et al*, 2015) [^1]. 
 
 "
 
