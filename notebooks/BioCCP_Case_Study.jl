@@ -11,10 +11,14 @@ import Pkg; Pkg.add(url="https://github.com/kirstvh/BioCCP.jl")
 using Plots, PlutoUI, Distributions, BioCCP
 
 # ╔═╡ 4d246460-af05-11eb-382b-590e60ba61f5
-md"## Case study
+md"## BioCCP Case studies
 
 
-In this notebook, the BioCCP.jl package will be applied onto a real biological problem. More specifically, we will illustrate how it can aid in determining an appropriate sample size in order to guarantee sufficient coverage of a CRISPR-Cas 9 guide RNA library. As a case study, we consider the paper 'Genome-wide CRISPR Screen in a Mouse Model of Tumor Growth and Metastasis' (Chen *et al*, 2015) [^1]. 
+In this notebook, the BioCCP.jl package will be applied onto a real biological problem. More specifically, we will 
+
+(1) illustrate how BioCCP can aid in determining an appropriate sample size in order to guarantee sufficient coverage of a CRISPR-Cas 9 guide RNA library. For this case study, we consider the paper 'Genome-wide CRISPR Screen in a Mouse Model of Tumor Growth and Metastasis' (Chen *et al.*, 2015) [^1]. 
+
+(2) show how BioCCP assists in sample determination for screening of modular proteins. For this case study, we will use the study 'Rapid and High-Throughput Evaluation of Diverse Configurations of Engineered Lysins Using the VersaTile Technique' (Duyvejonck *et al.*, 2021) [^2].
 
 "
 
@@ -63135,16 +63139,16 @@ reads_gRNA = [7.33862316
 1372.281192
 ]
 
-# ╔═╡ 94bcc8de-a0be-47ab-a03a-b04c351ad6f0
-begin
-	# histogram(reads_gRNA,  bar_edges=false, bins=300,  size = (700, 320), orientation=:v, titlefont=font(10), xguidefont=font(9), yguidefont=font(9), label="")
-	using StatsPlots
-density(reads_gRNA, label="") 
-			xlabel!("Number of reads"); ylabel!("Density"); title!("Distribution of gRNA reads in plasmid pool")
-end
-
 # ╔═╡ 737c8375-2c49-4f32-b54c-1f15f8d451d5
 md"which can be summarized in the following unimodal read distribution: "
+
+# ╔═╡ 94bcc8de-a0be-47ab-a03a-b04c351ad6f0
+begin
+	histogram(reads_gRNA,  bar_edges=false, bins=100,  size = (700, 320), orientation=:v, titlefont=font(10), xguidefont=font(9), yguidefont=font(9), label="")
+	# using StatsPlots
+# density(reads_gRNA, label="") 
+			xlabel!("Number of reads"); ylabel!("Density"); title!("Distribution of gRNA reads in plasmid pool")
+end
 
 # ╔═╡ 364c38ca-8637-4d26-8d64-525222d24033
 md"Normalizing for the total number of reads in the plasmid pool gives us a **probability vector** *p*, **containing for each gRNA a probability to be randomly sampled from the plasmid library** (proportional to its abundance in the library):"
@@ -63308,9 +63312,9 @@ md""" For the gRNA with the lowest abundance in the plasmid library, the probabi
 
 # ╔═╡ 60fff6ab-3e19-4af7-b102-17d3d47494f3
 begin
-	ed = Int(floor(n_cells*pᵢ_gRNA))
-	j = collect(0:1:minimum([20, 4*ed]))
-	x  = prob_occurrence_module.(pᵢ_gRNA, n_cells, j)
+	ed = Int(floor(n_cells*pᵢ_gRNA*r))
+	j = collect(0:1:2*ed)
+	x  = prob_occurrence_module.(pᵢ_gRNA, n_cells, r, j)
 	plot(j,x, seriestype=[:scatter, :line], xlabel="number of times gRNA is represented",
 					ylabel="probability", 
 					title=
@@ -63324,11 +63328,84 @@ end
 # ╔═╡ a041652b-365e-4594-9c48-c63d547b3295
 mean, std = n_cells * pᵢ_gRNA * r, sqrt(n_cells * pᵢ_gRNA * r)
 
+# ╔═╡ a6014a30-6643-4504-8081-17bcc8be2615
+md"##### [Rapid and High-Throughput Evaluation of Diverse Configurations of Engineered Lysins Using the VersaTile Technique (Duyvejonck *et al.*, 2021)](https://www.mdpi.com/2079-6382/10/3/293)
+
+This study aims engineering **modular endolysins** for obtaining optimal antibacterial properties. 
+
+#### Problem definition
+
+The endolysin engineered in the study can consists of different protein domains, e.g.:
+
+- an outer membrane permeabilizing peptide (OMP),
+- an enzymatically active domain (EAD),
+- a cell wall binding domain (CBD),
+- a peptide linker
+
+Different variants of these domain types are available and combined with the VersaTile DNA assembly technique.  The following picture represents an endolysin configuration that is considered in the paper:
+
+In this library, there is an availability of 
+
+- 42 OMPs, 
+- 7 linkers,
+- 6 CBDs, and
+- 23 EADs.  
+
+This results in a total number of 42 x 7 x 6 x 23 = **40572 possible endolysins**.
+
+"
+
+# ╔═╡ 5f480d13-2dd1-451e-adf5-45d5d7749fdc
+begin
+	n_OMP = 42;
+	n_linker = 7;
+	n_CBD = 6;
+	n_EAD = 23;
+end
+
+# ╔═╡ da16c262-4d76-4757-9e80-df6871546278
+md"However, due to limitations in the screening technique, only **188 endolysins from this library were analysed** for their activity against *Klebsiella pneumoniae*. "
+
+# ╔═╡ a4e1a017-c37c-4a81-915c-96638964eda2
+md"#### Determining coverage using BioCCP.jl"
+
+# ╔═╡ 12afa1a7-b4ed-4767-aff8-07dab6fa5d3c
+endolysins_sample_size = 188
+
+# ╔═╡ 16fd6703-d559-444c-8f42-26e314f29fb3
+md"The **probability that all available OMPs were observed at least once in this set**, will be calculated below. We assume that there is an equal probability for each OMP to be observed (optimistic scenario)."
+
+# ╔═╡ 63eed55a-1dfe-4b3d-b7aa-e4736718b105
+Float16(success_probability(n_OMP, endolysins_sample_size; p = ones(n_OMP)/n_OMP))
+
+# ╔═╡ a34b71fb-1da6-43db-981b-71e1a404e4d6
+md"The **probability that all available linkers were observed at least once in this set**, will be calculated below. We assume that there is an equal probability for each linker to be observed (optimistic scenario)."
+
+# ╔═╡ ca9f4254-b38c-4de2-bafb-f97dd15a46bc
+Float16(success_probability(n_linker, endolysins_sample_size; p = ones(n_linker)/n_linker))
+
+# ╔═╡ cf19ee57-174d-42b9-8f9d-f4654907fc2a
+md"The **probability that all available CBDs were observed at least once in this set**, will be calculated below. We assume that there is an equal probability for each CBD to be observed (optimistic scenario)."
+
+# ╔═╡ 63d90d97-ba80-449e-8d38-1bba52ab32ac
+Float16(success_probability(n_CBD, endolysins_sample_size; p = ones(n_CBD)/n_CBD))
+
+# ╔═╡ 062ceeb7-5d6d-48ce-8ad5-9e1d78a937e7
+md"The **probability that all available EADs were observed at least once in this set**, will be calculated below. We assume that there is an equal probability for each EAD to be observed (optimistic scenario)."
+
+# ╔═╡ 04a2acf6-52e2-42d7-96a0-f3e31d1f6b58
+Float16(success_probability(n_EAD, endolysins_sample_size; p = ones(n_EAD)/n_EAD))
+
+# ╔═╡ 63dedbcb-7ea0-4c4e-bb4c-fa8e258f9a93
+md"**We can conclude the EADs, CBDs and linker domains were sufficiently covered by the sample size of $endolysins_sample_size endolysins. However, the OMPs are only guaranteed to be covered for 62 %.** "
+
 # ╔═╡ fbffaab6-3154-49df-a226-d5810d0b7c38
 md"""## References"""
 
 # ╔═╡ 1f48143a-2152-4bb9-a765-a25e70c281a3
 md"""[^1]:  Chen, S., Sanjana, N. E., Zheng, K., Shalem, O., Lee, K., Shi, X., ... & Sharp, P. A. (2015). *Genome-wide CRISPR screen in a mouse model of tumor growth and metastasis.* Cell, 160(6), 1246-1260.
+
+[^2]: Duyvejonck, L., Gerstmans, H., Stock, M., Grimon, D., Lavigne, R., & Briers, Y. (2021). *Rapid and High-Throughput Evaluation of Diverse Configurations of Engineered Lysins Using the VersaTile Technique.* Antibiotics, 10(3), 293.
 
 """
 
@@ -63383,5 +63460,19 @@ md"""[^1]:  Chen, S., Sanjana, N. E., Zheng, K., Shalem, O., Lee, K., Shi, X., .
 # ╠═ead64d36-947a-4b9f-a0f7-a1821039f5b3
 # ╟─60fff6ab-3e19-4af7-b102-17d3d47494f3
 # ╠═a041652b-365e-4594-9c48-c63d547b3295
+# ╟─a6014a30-6643-4504-8081-17bcc8be2615
+# ╠═5f480d13-2dd1-451e-adf5-45d5d7749fdc
+# ╟─da16c262-4d76-4757-9e80-df6871546278
+# ╟─a4e1a017-c37c-4a81-915c-96638964eda2
+# ╠═12afa1a7-b4ed-4767-aff8-07dab6fa5d3c
+# ╟─16fd6703-d559-444c-8f42-26e314f29fb3
+# ╠═63eed55a-1dfe-4b3d-b7aa-e4736718b105
+# ╟─a34b71fb-1da6-43db-981b-71e1a404e4d6
+# ╠═ca9f4254-b38c-4de2-bafb-f97dd15a46bc
+# ╟─cf19ee57-174d-42b9-8f9d-f4654907fc2a
+# ╠═63d90d97-ba80-449e-8d38-1bba52ab32ac
+# ╟─062ceeb7-5d6d-48ce-8ad5-9e1d78a937e7
+# ╠═04a2acf6-52e2-42d7-96a0-f3e31d1f6b58
+# ╟─63dedbcb-7ea0-4c4e-bb4c-fa8e258f9a93
 # ╟─fbffaab6-3154-49df-a226-d5810d0b7c38
 # ╟─1f48143a-2152-4bb9-a765-a25e70c281a3
