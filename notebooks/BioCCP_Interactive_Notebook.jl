@@ -14,7 +14,7 @@ macro bind(def, element)
 end
 
 # ╔═╡ 56571409-a81d-4772-98fd-e85e883aa4e4
-using Plots, PlutoUI, Images, BioCCP, LaTeXStrings
+using Plots, PlutoUI, Images, BioCCP 
 
 # ╔═╡ 20ce43cd-7634-4c94-afdf-d243415525cb
 md"                                                             $(@bind date DateField())"
@@ -251,7 +251,7 @@ begin
 	
 	if show_modprobs == "🔻 SHOW "   
 	
-	scatter(p_vec, title = "Probability mass function", ylabel = "module probability pj", xlabel = "module j", label="", size = (700, 400))
+	scatter(p_vec, title = "Probability mass function", ylabel = "module probability pⱼ", xlabel = "module j", label="", size = (700, 400))
 	ylims!((0,2*maximum(p_vec)), titlefont=font(10), xguidefont=font(9), yguidefont=font(9))
 
 	end	
@@ -328,24 +328,6 @@ md""" **💻 Success probability**               �
 
 *The probability that the minimum number of designs T is smaller than or equal to a given sample size t.* """
 
-# ╔═╡ 24f7aae7-d37a-4db5-ace0-c910b178da88
-begin
-if show_success == "🔻 SHOW " 
-	
-sample_size_initial = 5
-	while (1 - success_probability(n, sample_size_initial; p = p_vec, r = r, m = m)) > 0.0005
-		global sample_size_initial += Int(ceil(n/10))
-	end
-		
-	sample_sizes = Int.(ceil.(0:n/10:sample_size_initial))
-	successes = success_probability.(n, sample_sizes; p = p_vec, r = r, m = m)
-plot(sample_sizes, successes, title = "Success probability in function of sample size", 
-			xlabel = "sample size s", 
-			ylabel="P(minimum sample size Smin <= s)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter, titlefont=font(10),xguidefont=font(9), yguidefont=font(9))
-		end
-	 
-end
-
 # ╔═╡ db4371e4-7f86-4db3-b076-12f6cd220b89
 begin	
 	if show_success == "🔻 SHOW " 
@@ -382,6 +364,24 @@ end
 
 # ╔═╡ 9616af0e-810c-4e6a-bc67-cb70e5e620f5
 
+
+# ╔═╡ 24f7aae7-d37a-4db5-ace0-c910b178da88
+begin
+if show_success == "🔻 SHOW " 
+	
+sample_size_initial = 5
+	while (1 - success_probability(n, sample_size_initial; p = p_vec, r = r, m = m)) > 0.0005
+		global sample_size_initial += Int(ceil(n/10))
+	end
+		
+	sample_sizes = Int.(ceil.(0:n/10:sample_size_initial))
+	successes = success_probability.(n, sample_sizes; p = p_vec, r = r, m = m)
+plot(sample_sizes, successes, title = "Success probability in function of sample size", 
+			xlabel = "sample size s", 
+			ylabel="P(minimum sample size <= s)", label = "", legend=:bottomright, size=(600,400), seriestype=:scatter, titlefont=font(10),xguidefont=font(9), yguidefont=font(9))
+		end
+	 
+end
 
 # ╔═╡ 4902d817-3967-45cd-a283-b2872cf1b49c
 if show_success == "🔻 SHOW " 
@@ -432,7 +432,7 @@ end
 
 
 # ╔═╡ dc696281-7a5b-4568-a4c2-8dde90af43f0
-md""" **💻 Expected observed fraction of the total number of modules**                $(@bind show_satur Select(["🔻 SHOW ", "🔺 HIDE "], default="🔻 SHOW "))\
+md""" **💻 Expected observed fraction of the total number of modules**                $(@bind show_satur Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE "))\
 *The fraction of the total number of available modules that is expected to be observed after collecting a given number of designs.*"""
 
 # ╔═╡ eb92ff7c-0140-468c-8b32-f15d1cf15913
@@ -474,7 +474,7 @@ global sample_size_initial_frac = 5
 	
 	plot(sample_sizes_frac, fracs, title = "Expected observed fraction of the total number of modules", 
 	    xlabel = "sample size", seriestype=:scatter, 
-	    ylabel= "E[fraction observed]", label = "", size=(700,400), xguidefont=font(9), yguidefont=font(9), titlefont=font(10))
+	    ylabel= "Expected observed fraction", label = "", size=(700,400), xguidefont=font(9), yguidefont=font(9), titlefont=font(10))
 end
 end
 
@@ -487,7 +487,7 @@ end
 
 
 # ╔═╡ f92a6b6e-a556-45cb-a1ae-9f5fe791ffd2
-md""" **💻 Occurrence of a specific module**                                                                                                       $(@bind show_occ Select(["🔻 SHOW ", "🔺 HIDE "], default="🔻 SHOW "))\
+md""" **💻 Occurrence of a specific module**                                                                                                       $(@bind show_occ Select(["🔻 SHOW ", "🔺 HIDE "], default="🔺 HIDE "))\
 *How many times one can expect to have collected a specific module in a sample of a given size.*"""
 
 # ╔═╡ ec2a065f-0dc7-44d4-a18b-6c6a228b3ffc
@@ -525,7 +525,8 @@ if show_occ == "🔻 SHOW "
 			
 		plot(j,x, seriestype=[:scatter, :line], xlabel="occurrences in sample",
 				ylabel="probability", 
-				title="Probability on number of occurrences for specific module", 
+				title="Probability on number of occurrences for specific module
+(for sample size = $sample_size_3)", 
 				size=((600,300)), label="",titlefont=font(10), 
 				xguidefont=font(9), yguidefont=font(9))
 	
@@ -538,7 +539,8 @@ if show_occ == "🔻 SHOW "
 			
 		plot(j,x, seriestype=[:scatter, :line], xlabel="occurrences in sample",
 				ylabel="probabilityS", 
-				title="Probability on number of occurrences for specific module", 
+				title="Probability on number of occurrences for specific module
+(for sample size = $sample_size_3)", 
 				size=((600,300)), label="",titlefont=font(10), 
 				xguidefont=font(9), yguidefont=font(9))
 	 			
@@ -580,14 +582,12 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 BioCCP = "79e6b149-e254-49fe-a721-3c4960de1574"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
-LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 BioCCP = "~0.1.0"
 Images = "~0.24.1"
-LaTeXStrings = "~1.2.1"
 Plots = "~1.22.4"
 PlutoUI = "~0.7.14"
 """
