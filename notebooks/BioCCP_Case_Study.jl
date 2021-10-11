@@ -63225,10 +63225,10 @@ The **expected minimum number of cells** that need be injected into the mice so 
 m = 1
 
 # ╔═╡ f35928d5-e8c2-4c9f-b4ba-9cb58eafb9e0
-expectation_minsamplesize(n_gRNAs; p = p_gRNA, r = r, m = m)
+# expectation_minsamplesize(n_gRNAs; p = p_gRNA, r = r, m = m)
 
 # ╔═╡ b8fe484e-1189-4fd0-85b9-715e084d65da
-std_minsamplesize(n_gRNAs; p = p_gRNA, r = r, m = m)
+# std_minsamplesize(n_gRNAs; p = p_gRNA, r = r, m = m)
 
 # ╔═╡ d4cd5ff7-88b8-4e5c-a540-04c51ad51f42
 
