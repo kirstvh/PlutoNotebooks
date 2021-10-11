@@ -5,7 +5,7 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ ee082fcf-54d1-4aea-9944-8d7f81c6dbf4
-using  BioCCP, Plots, Distributions
+using  BioCCP, Plots, PlutoUI, Distributions
 
 # ╔═╡ 41beadc2-385e-42bf-9960-ab201242b400
 md"*Loading the required packages...*"
@@ -63262,19 +63262,19 @@ end
 md"When the number of cells is equal to $sample_size_paper, the probability that all gRNAs will be represented in the genome-wide screening experiment at least once, is:"
 
 # ╔═╡ 7eb18559-e2c0-4c34-a2b2-4e3c3ab831a6
-Float64(success_probability(63090, 3*10^7; p = p_gRNA, r = r, m = m))
+success_probability(63090, 3*10^7; p = p_gRNA, r = r, m = m)
 
 # ╔═╡ ecf6292c-7cdd-4886-8a59-be8e4f2751b7
 md"Let's investigate how many complete sets of gRNAs that are suffficiently covered by the sample size of the study by Chen *et al.*. Let's define sufficient coverage as a success probability of at least 95%."
 
 # ╔═╡ 56f21296-fcd2-46f7-a130-4cb6940c1133
-Float64(success_probability(63090, sample_size_paper; p = p_gRNA, r = r, m = 2))
+success_probability(63090, sample_size_paper; p = p_gRNA, r = r, m = 2)
 
 # ╔═╡ 09d77a14-01f4-430c-9038-25b85b31a1c2
-Float64(success_probability(63090, sample_size_paper; p = p_gRNA, r = r, m = 7))
+success_probability(63090, sample_size_paper; p = p_gRNA, r = r, m = 7)
 
 # ╔═╡ 071cdabe-3443-490c-ab79-e270a0a1de68
-Float64(success_probability(63090, sample_size_paper; p = p_gRNA, r = r, m = 10))
+success_probability(63090, sample_size_paper; p = p_gRNA, r = r, m = 10)
 
 # ╔═╡ c59c5fb7-7291-46e2-88af-03ed38c7c3eb
 begin
@@ -63498,11 +63498,13 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 BioCCP = "79e6b149-e254-49fe-a721-3c4960de1574"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 BioCCP = "~0.1.0"
 Distributions = "~0.25.18"
 Plots = "~1.22.4"
+PlutoUI = "~0.7.16"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -63741,6 +63743,23 @@ deps = ["Base64", "Dates", "IniFile", "Logging", "MbedTLS", "NetworkOptions", "S
 git-tree-sha1 = "14eece7a3308b4d8be910e265c724a6ba51a9798"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 version = "0.9.16"
+
+[[Hyperscript]]
+deps = ["Test"]
+git-tree-sha1 = "8d511d5b81240fc8e6802386302675bdf47737b9"
+uuid = "47d2ed2b-36de-50cf-bf87-49c2cf4b8b91"
+version = "0.0.4"
+
+[[HypertextLiteral]]
+git-tree-sha1 = "f6532909bf3d40b308a0f360b6a0e626c0e263a8"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.1"
+
+[[IOCapture]]
+deps = ["Logging", "Random"]
+git-tree-sha1 = "f7be53659ab06ddc986428d3a9dcc95f6fa6705a"
+uuid = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
+version = "0.2.2"
 
 [[IniFile]]
 deps = ["Test"]
@@ -64032,6 +64051,12 @@ deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers"
 git-tree-sha1 = "6841db754bd01a91d281370d9a0f8787e220ae08"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 version = "1.22.4"
+
+[[PlutoUI]]
+deps = ["Base64", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
+git-tree-sha1 = "4c8a7d080daca18545c56f1cac28710c362478f3"
+uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+version = "0.7.16"
 
 [[Preferences]]
 deps = ["TOML"]
