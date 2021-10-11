@@ -49,11 +49,7 @@ md"""
 end
 
 # ╔═╡ e1b554a6-db6c-4d2a-9dd3-0a35095f4d8c
-# begin
-# 	url = "https://raw.githubusercontent.com/kirstvh/BioCCP/main/BioCCP_scheme.png" 
-# 	filename = download(url)
-# 	img = load(filename)
-# end
+Show(MIME"image/png"(), read("BioCCP_scheme.png"))
 
 # ╔═╡ 36a09fff-8b14-4d91-84e0-9ecabefa810a
 
@@ -1528,7 +1524,7 @@ version = "0.9.1+5"
 # ╠═56571409-a81d-4772-98fd-e85e883aa4e4
 # ╟─6183795b-62a0-4ed4-b8f9-ea522da956e2
 # ╟─a8c81622-194a-443a-891b-bfbabffccff1
-# ╠═e1b554a6-db6c-4d2a-9dd3-0a35095f4d8c
+# ╟─e1b554a6-db6c-4d2a-9dd3-0a35095f4d8c
 # ╟─36a09fff-8b14-4d91-84e0-9ecabefa810a
 # ╟─40ac5be1-6fc2-4fbc-b0ca-a021266b2247
 # ╟─7b05669c-7abe-42a7-838c-61c06b261256
