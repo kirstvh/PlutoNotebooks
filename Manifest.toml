@@ -48,7 +48,7 @@ uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 deps = ["Distributions"]
 git-tree-sha1 = "791b4218060972fa3a37313208c674597581ee05"
 uuid = "79e6b149-e254-49fe-a721-3c4960de1574"
-version = "0.1.0"
+version = "0.1.1"
 
 [[Bzip2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
